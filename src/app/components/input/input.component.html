@@ -1,0 +1,20 @@
+<label 
+  [for]="label" 
+  class="block text-sm font-bold text-gray-700"> 
+  {{label}} 
+</label>
+
+<input 
+  [type]="type" 
+  [id]="label" 
+  autocomplete="off" 
+  class="input" 
+  [class.invalid]="control.invalid && control.dirty && control.touched"
+  [formControl]="control" 
+/>
+
+@if (control.invalid && control.dirty && control.touched) {
+  @for (error of control.errors | keyvalue; track $index) {
+    <span class="text-red-400 text-sm font-bold">{{ errorMessages[error.key] }}</span>
+  }
+}
