@@ -6,12 +6,14 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 
 import {Dialog, DialogModule} from "@angular/cdk/dialog"
 import { ProductCrearFormComponent } from './components/product-form.component';
+import { AlertService } from '@/core/services/alert.service';
 
 @Component({
   selector: 'app-product',
   standalone: true,
   imports: [TableComponent,TitleCreateComponent,DialogModule],
   template: `
+  <div class="entrada">
     <app-title-create title="Productos" (onOpenDialog)="openDiloagCrear()" />
 
     <app-table [header]="header">
@@ -27,6 +29,7 @@ import { ProductCrearFormComponent } from './components/product-form.component';
         </tr>
       }
     </app-table> 
+  </div>
   `,
   styles: `
    :host {
@@ -39,6 +42,7 @@ export default class ProductPage implements OnInit {
 
   #productService = inject(ProductService)
   #dialog = inject(Dialog)
+  #alertService = inject(AlertService)
 
   public product = signal<ProductDto[]>([])
   public header = ["Nombre", "Stock", "Precio Venta", "Precio Compra", "Tamaño", "Unidad", "Categoria"]
@@ -57,6 +61,8 @@ export default class ProductPage implements OnInit {
       },
       disableClose:true,
     });
+
+    
   }
 
 }

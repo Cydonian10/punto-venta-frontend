@@ -14,12 +14,34 @@
     @apply ring-2 ring-red-400;
   }
 
+  // * botones
+
   .btn {
-   @apply inline-block rounded bg-indigo-600 px-8 py-3 text-sm font-medium text-white  focus:outline-none focus:ring active:bg-indigo-500;
+   @apply inline-block rounded  px-8 py-3 text-sm font-medium text-white  focus:outline-none focus:ring ;
+  }
+
+  .btn-primary {
+    @apply bg-indigo-600 active:bg-indigo-500
+  }
+
+  .btn-secondary {
+    @apply bg-slate-600 active:bg-slate-500
   }
   
   .animation-btn {
     @apply  hover:rotate-2 hover:scale-110 transition
+  }
+
+  .btn-icon {
+    @apply py-2 px-6 text-center  relative before:absolute before:top-0 before:left-0 before:w-full before:h-full before:z-10  before:transition-all before:duration-300 hover:before:opacity-0 hover:before:scale-50 after:absolute after:top-0 after:left-0 after:w-full after:h-full after:z-10 after:opacity-0 after:transition-all after:duration-300 after:border  after:scale-125 hover:after:opacity-100 hover:after:scale-100 active:scale-95
+  }
+
+  .btn-icon-primary {
+    @apply text-green-600 after:border-green-600 before:bg-green-500/10 
+  }
+
+  .btn-icon-danger {
+    @apply text-red-600 after:border-red-600 before:bg-red-500/10
   }
 }
 
@@ -28,3 +50,64 @@
     @apply  m-auto max-w-full;
   }
 }
+
+
+/* Estilos básicos para el elemento que se animará */
+.entrada {
+    opacity: 0; /* Inicialmente oculto */
+    animation: aparecer 0.5s forwards; /* Usaremos una animación llamada "aparecer" que dura 1 segundo */
+}
+
+/* Definición de la animación */
+@keyframes aparecer {
+    from {
+        opacity: 0; /* Comienza completamente transparente */
+    }
+    to {
+        opacity: 1; /* Termina completamente visible */
+    }
+}
+
+
+// * animacion de countdown
+
+.countdown {
+  display: flex;
+}
+
+.number {
+  font-size: 1em;
+  margin: 0 -4px;
+  opacity: 0;
+  animation: countdown-animation 1s ease forwards;
+}
+
+@keyframes countdown-animation {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.number:nth-child(2) {
+  animation-delay: 1s;
+}
+
+.number:nth-child(3) {
+  animation-delay: 2s;
+}
+
+.number:nth-child(4) {
+  animation-delay: 3s;
+}
+
+
+// * 

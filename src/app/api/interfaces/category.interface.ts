@@ -9,5 +9,5 @@ export interface CategoryCrearDto {
   description: string;
 }
 
-export interface UpdateCategoryDto extends CategoryCrearDto {}
+export interface CategoryUpdateDto extends CategoryCrearDto {}
 
