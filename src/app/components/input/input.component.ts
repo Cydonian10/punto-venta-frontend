@@ -7,7 +7,12 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   imports: [ReactiveFormsModule, KeyValuePipe],
   templateUrl: './input.component.html',
-  styles: ``,
+  styles: `
+    :host {
+      display:block;
+      width:100%;
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InputComponent {

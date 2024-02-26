@@ -54,6 +54,12 @@ export class AlertComponent {
       text: 'text-green-500',
       icon: 'bx bx-check',
       type: "Success"
+    },
+    Warning : {
+      color: 'bg-amber-500',
+      text: 'text-amber-500',
+      icon: 'bx bx-error-alt',
+      type: "Warning"
     }
   }
 

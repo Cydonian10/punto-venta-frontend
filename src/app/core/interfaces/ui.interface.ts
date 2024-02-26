@@ -1,1 +1,1 @@
-export type Alert = "Success" | "Error"
+export type Alert = "Success" | "Error" | "Warning"

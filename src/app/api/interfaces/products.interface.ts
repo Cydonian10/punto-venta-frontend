@@ -33,3 +33,9 @@ export interface ProductCrearDto {
 }
 
 export interface ProductUpdateDto extends ProductCrearDto {}
+
+export interface FilterProductDto {
+  name: string | null;
+  price: number | null;
+  stock: number | null;
+}

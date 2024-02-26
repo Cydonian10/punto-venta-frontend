@@ -66,4 +66,28 @@ export class AlertService {
     }, 1);
   }
 
+  showAlertWarning(message:string) {
+    
+    this.config.update(old => {
+      return { ...old,show:false }
+    })
+
+    setTimeout(() => {
+      clearTimeout(this.setId)
+    
+      this.config.set({
+        color:"bg-slate-700",
+        message,
+        type:"Warning",
+        show:true
+      }) 
+
+      this.setId =  setTimeout(() => {
+        this.config.update(old => {
+          return { ...old,show:false }
+        })
+      },3000) 
+    }, 1);
+  }
+
 }

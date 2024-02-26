@@ -70,7 +70,7 @@ export default class UnitPage {
 
     dialogRef.closed.subscribe( (resp:any) => {
       if(resp === undefined) {
-        this.#alertService.showAlertError("Cancelado")
+        this.#alertService.showAlertWarning("Cancelado")
         return;
       }
       if(resp.id) {

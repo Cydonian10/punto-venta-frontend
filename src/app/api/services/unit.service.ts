@@ -10,7 +10,7 @@ export class UnitService {
 
   #http = inject(HttpClient);
 
-  #url = `${environment.apiUrl}/api/unit`;
+  #url = `${environment.apiUrl}/api/units`;
   
 
   getUnits() {

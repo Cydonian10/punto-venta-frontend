@@ -1,7 +1,7 @@
 import {
-  CategoryCrearDto,
+  CreateCategoryDto,
   CategoryDto,
-  CategoryUpdateDto,
+  UpdateCategoryDto,
 } from '@/api/interfaces/category.interface';
 import { CategoryService } from '@/api/services/category.service';
 import { TableComponent } from '@/components/table/table.component';
@@ -17,15 +17,19 @@ import {
 import { CategoryFormComponent } from './components/category-form.component';
 import { AlertComponent } from '@/components/alert/alert.component';
 import { AlertService } from '@/core/services/alert.service';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { debounceTime, of, switchMap } from 'rxjs';
+import { InputComponent } from "@/components/input/input.component";
 
 @Component({
-  selector: 'app-category',
-  standalone: true,
-  imports: [TableComponent, TitleCreateComponent, DialogModule, AlertComponent],
-  template: `
+    selector: 'app-category',
+    standalone: true,
+    template: `
     <div class="entrada">
-      <app-title-create title="Categorias" (onOpenDialog)="openDiloagCrear()" />
-
+      <app-title-create title="Categorias" (onOpenDialog)="openDiloagCrear()" >
+      <app-input [control]="filterName" /> 
+    </app-title-create>
+      
       <app-table [header]="header">
         @for (category of categories(); track $index) {
         <tr class="hover:bg-gray-100 transition-all">
@@ -55,22 +59,46 @@ import { AlertService } from '@/core/services/alert.service';
       </app-table>
     </div>
   `,
-  styles: `
+    styles: `
    :host {
       display: block;
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [TableComponent, TitleCreateComponent, DialogModule, AlertComponent, ReactiveFormsModule, InputComponent]
 })
 export default class CategoryPage implements OnInit {
+
+  // Services
   #categoryService = inject(CategoryService);
   #dialog = inject(Dialog);
   #alertService = inject(AlertService);
 
+  // Propertities
   public categories = signal<CategoryDto[]>([]);
   public header = ['N°', 'Nombre', 'Description', 'Actions'];
 
+  // ReactiForm
+  public filterName = new FormControl("", {
+      nonNullable:true, 
+  })
+
   ngOnInit(): void {
+    this.getCategories()
+
+    this.filterName.valueChanges.pipe(
+      debounceTime(1000),
+      switchMap(resp => {
+        if (resp === '') { return of(null); } 
+        else { return this.#categoryService.filterByName(resp); }
+      })
+    ).subscribe(filteredResults => {
+      if (filteredResults === null) { this.getCategories();} 
+      else { this.categories.set(filteredResults); }
+    })
+  }
+
+  getCategories() {
     this.#categoryService.getCategories().subscribe({
       next: (resp) => this.categories.set(resp),
     });
@@ -85,7 +113,7 @@ export default class CategoryPage implements OnInit {
 
     dilogRef.closed.subscribe((resp: any) => {
       if (resp === undefined) {
-        this.#alertService.showAlertError('Cancelado');
+        this.#alertService.showAlertWarning('Cancelado');
         return;
       }
       if(resp.id) {
@@ -97,14 +125,14 @@ export default class CategoryPage implements OnInit {
     });
   }
 
-  crearCategory(data: CategoryCrearDto) {
+  crearCategory(data: CreateCategoryDto) {
     this.#categoryService.crearCategory(data).subscribe((resp: any) => {
       this.categories.update((old) => [resp, ...old]);
       this.#alertService.showAlertSuccess('Creado Correctamente');
     });
   }
 
-  updateCategory(data: CategoryUpdateDto,id:number) {
+  updateCategory(data: UpdateCategoryDto,id:number) {
     this.#categoryService.updateCategory(data,id).subscribe(() => {
       this.categories.update(old => {
         return old.map(item =>  {

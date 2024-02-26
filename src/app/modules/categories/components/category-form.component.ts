@@ -1,4 +1,4 @@
-import { CategoryCrearDto, CategoryDto } from '@/api/interfaces/category.interface';
+import { CreateCategoryDto, CategoryDto } from '@/api/interfaces/category.interface';
 import { InputComponent } from '@/components/input/input.component';
 import { DialogLayout } from '@/layouts/dialog/dialog.layout';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
@@ -10,7 +10,7 @@ import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   imports: [DialogLayout,InputComponent,ReactiveFormsModule],
   template: `
-    <dialog-layout title="Crear Categoria" (onClose)="closeDialog()">
+    <dialog-layout [title]="this.data ? 'Actualizar':'Crear'" (onClose)="closeDialog()">
       <form [formGroup]="form"  (ngSubmit)="handleForm()">
           <app-input [control]="form.controls.name"  type="text" label="Nombre" />
           

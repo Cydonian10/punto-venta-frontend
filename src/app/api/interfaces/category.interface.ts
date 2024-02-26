@@ -4,10 +4,10 @@ export interface CategoryDto {
   description: string
 }
 
-export interface CategoryCrearDto {
+export interface CreateCategoryDto {
   name:        string;
   description: string;
 }
 
-export interface CategoryUpdateDto extends CategoryCrearDto {}
+export interface UpdateCategoryDto extends CreateCategoryDto {}
 
