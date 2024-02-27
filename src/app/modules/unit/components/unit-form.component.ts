@@ -3,7 +3,7 @@ import { InputComponent } from '@/components/input/input.component';
 import { DialogLayout } from '@/layouts/dialog/dialog.layout';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-unit-form',
@@ -40,8 +40,8 @@ import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 })
 export class UnitFormComponent {
   public form = this.fb.group({
-    name: new FormControl(),
-    symbol: new FormControl(),
+    name: new FormControl("", {validators:[Validators.required]}),
+    symbol: new FormControl("", {validators:[Validators.required]}),
   });
 
   constructor(
@@ -59,6 +59,11 @@ export class UnitFormComponent {
   }
 
   handleForm() {
+    if(this.form.invalid) {
+      this.form.markAllAsTouched()
+      return
+    }
+
     if(this.data) {
       this.dialogRef.close({...this.form.getRawValue(),id:this.data.id})
     }

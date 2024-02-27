@@ -1,31 +1,50 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
-import { HttpClient } from '@angular/common/http';
-import { ProductCrearDto, ProductDto } from '../interfaces/products.interface';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import {
+  FilterProductDto,
+  ProductCrearDto,
+  ProductDto,
+  ProductsResposne,
+} from '../interfaces/products.interface';
+import { PageDto } from '../interfaces/page.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductService {
-
   #http = inject(HttpClient);
 
   #url = `${environment.apiUrl}/api/products`;
-  
 
-  getProduct() {
-    return this.#http.get<ProductDto[]>(`${this.#url}`)
+  getProduct(pagination?: PageDto) {
+
+    let params = new HttpParams()
+    if (pagination)  {
+      params = params.append("page", pagination.page)
+      params = params.append("quantityRecordsPerPage", pagination.quantityRecordsPerPage)
+    }
+    return this.#http.get<ProductsResposne>(`${this.#url}`, { params });
   }
 
-  crearProduct(data:ProductCrearDto) {
-    return this.#http.post(`${this.#url}`,data)
+  getFilter(filter: FilterProductDto) {
+    let params = new HttpParams();
+    if (filter.name) params = params.append('name', filter.name);
+    if (filter.price) params = params.append('price', filter.price);
+    if (filter.stock) params = params.append('stock', filter.stock);
+
+    return this.#http.get<ProductDto[]>(`${this.#url}/filter`, { params })
   }
 
-  updateProduct(data:ProductCrearDto,id:number) {
-    return this.#http.put(`${this.#url}/${id}`,data)
+  crearProduct(data: ProductCrearDto) {
+    return this.#http.post(`${this.#url}`, data);
   }
 
-  deleteProduct(id:number) {
-    return this.#http.delete(`${this.#url}/${id}`)
+  updateProduct(data: ProductCrearDto, id: number) {
+    return this.#http.put(`${this.#url}/${id}`, data);
+  }
+
+  deleteProduct(id: number) {
+    return this.#http.delete(`${this.#url}/${id}`);
   }
 }

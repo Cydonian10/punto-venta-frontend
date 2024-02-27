@@ -9,12 +9,14 @@
   [id]="label" 
   autocomplete="off" 
   class="input" 
-  [class.invalid]="control.invalid && control.dirty && control.touched"
+  [class.invalid]="control.invalid && control.touched"
   [formControl]="control" 
 />
 
-@if (control.invalid && control.dirty && control.touched) {
+@if (control.invalid  && control.touched) {
   @for (error of control.errors | keyvalue; track $index) {
     <span class="text-red-400 text-sm font-bold">{{ errorMessages[error.key] }}</span>
   }
 }
+
+<!-- && control.dirty -->

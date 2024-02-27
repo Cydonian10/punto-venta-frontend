@@ -1,6 +1,13 @@
 import { CategoryDto } from "./category.interface";
 import { UnitDto } from "./unit.interface";
 
+
+export interface ProductsResposne {
+  totalPages:number,
+  data: ProductDto[]
+}
+
+
 export interface ProductDto {
   id:                number;
   stock:             number;
@@ -16,7 +23,6 @@ export interface ProductDto {
   category:          CategoryDto;
   unitMeasurement:   UnitDto;
 }
-
 
 export interface ProductCrearDto {
   stock:             number;
