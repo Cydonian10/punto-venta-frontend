@@ -21,6 +21,8 @@ import { ProductFilterComponent } from './components/product-filter.component';
 import { AlertService } from '@/core/services/alert.service';
 import { PageDto } from '@/api/interfaces/page.interface';
 import { PaginacionComponent } from '@/components/paginación/paginacion.component';
+import { ProductHistoryComponent } from './components/product-history.component';
+import { PriceUpdateComponent } from './components/price-update.component';
 
 @Component({
   selector: 'app-product',
@@ -54,7 +56,13 @@ import { PaginacionComponent } from '@/components/paginación/paginacion.compone
             {{ product.stock }}
           </td>
           <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            {{ product.salePrice }}
+            <button
+              type="button"
+              (click)="updatePrice(product.id,product.salePrice)"
+              class="bg-amber-500/30 rounded-md py-1 px-1 w-[70px]"
+            >
+              {{ product.salePrice }}
+            </button>
           </td>
           <td class="whitespace-nowrap px-4 py-2 text-gray-700">
             {{ product.purchasePrice }}
@@ -71,7 +79,7 @@ import { PaginacionComponent } from '@/components/paginación/paginacion.compone
           <td class="whitespace-nowrap px-4 py-2 text-gray-700">
             <div class="flex items-start gap-2">
               <button
-                class="btn-icon btn-icon-primary px-2 py-1"
+                class="btn-icon btn-icon-success px-2 py-1"
                 (click)="openDiloagCrear(product)"
               >
                 <i class="bx bxs-pencil"></i>
@@ -81,6 +89,12 @@ import { PaginacionComponent } from '@/components/paginación/paginacion.compone
                 (click)="deleteProduct(product.id)"
               >
                 <i class="bx bxs-trash-alt"></i>
+              </button>
+              <button
+                class="btn-icon btn-icon-primary px-2 py-1"
+                (click)="historyProduct(product.id)"
+              >
+                <i class="bx bx-detail"></i>
               </button>
             </div>
           </td>
@@ -195,6 +209,28 @@ export default class ProductPage implements OnInit {
     });
   }
 
+  updatePrice(id:number,precio:number) {
+    const dialogRef = this.#dialog.open(PriceUpdateComponent, {
+      width: '100%',
+      data: { id, precio },
+      disableClose: true,
+    });
+
+    dialogRef.closed.subscribe((resp: any) => {
+      if(resp === undefined) { return }
+      this.#productService.updateSalePrice(resp,id).subscribe( () => {
+        this.products.update( x => x.map(x => {
+          if(x.id === id) {
+            x.salePrice = parseFloat(resp)
+          }
+          return x
+        }))
+        this.#alertService.showAlertSuccess("Precio Actualizado")
+      })
+    })
+
+  }
+
   deleteProduct(id: number) {
     const alert = window.confirm('Estas seguro de eliminar ? ');
 
@@ -204,6 +240,14 @@ export default class ProductPage implements OnInit {
         this.#alertService.showAlertSuccess('Eliminado correctamente');
       });
     }
+  }
+
+  historyProduct(id: number) {
+    this.#dialog.open(ProductHistoryComponent, {
+      width: '100%',
+      data: { id },
+      disableClose: true,
+    });
   }
 
   applicarFiltro(value: any) {

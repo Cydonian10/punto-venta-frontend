@@ -3,6 +3,7 @@ import { environment } from '../../../environments/environment.development';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {
   FilterProductDto,
+  HistoryProductPrice,
   ProductCrearDto,
   ProductDto,
   ProductsResposne,
@@ -46,5 +47,15 @@ export class ProductService {
 
   deleteProduct(id: number) {
     return this.#http.delete(`${this.#url}/${id}`);
+  }
+
+  getHistoryProductPrice(id:number) {
+    return this.#http.get<HistoryProductPrice[]>(`${this.#url}/history/${id}`,);
+  }
+
+  updateSalePrice(price:number,id:number) {
+      const pathOperation = [{path:"/salePrice",op:"replace",value:price}]
+
+      return this.#http.patch(`${this.#url}/${id}`,pathOperation)
   }
 }

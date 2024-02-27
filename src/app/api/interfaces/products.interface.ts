@@ -45,3 +45,11 @@ export interface FilterProductDto {
   price: number | null;
   stock: number | null;
 }
+
+export interface HistoryProductPrice {
+  id:number,
+  productId:number,
+  oldPrice:number,
+  name:string,
+  date:string
+}
