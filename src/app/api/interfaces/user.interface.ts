@@ -7,3 +7,4 @@ export interface EmployedDto {
   id:    string;
   email: string;
 }
+

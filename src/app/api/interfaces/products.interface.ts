@@ -22,6 +22,7 @@ export interface ProductDto {
   name:              string;
   category:          CategoryDto;
   unitMeasurement:   UnitDto;
+  inputActive?:boolean
 }
 
 export interface ProductCrearDto {

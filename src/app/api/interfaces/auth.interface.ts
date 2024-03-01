@@ -31,3 +31,23 @@ export interface Profile {
     emailConfirmed: boolean;
     salary: number;
 }
+
+export interface AuthRespuesta {
+  token:string
+  expiración:string
+}
+
+export interface AuthUser {
+  usuario: User;
+  roles:   any[];
+  claims:  any[];
+}
+
+export interface User {
+  id:             string;
+  name:           string;
+  birthday:       Date;
+  email:          string;
+  emailConfirmed: boolean;
+  salary:         number;
+}

@@ -37,7 +37,7 @@ export class AlertService {
         this.config.update(old => {
           return { ...old,show:false }
         })
-      },3000) 
+      },5000) 
     },1)
     
   }
@@ -62,7 +62,7 @@ export class AlertService {
         this.config.update(old => {
           return { ...old,show:false }
         })
-      },3000) 
+      },5000) 
     }, 1);
   }
 
@@ -86,7 +86,7 @@ export class AlertService {
         this.config.update(old => {
           return { ...old,show:false }
         })
-      },3000) 
+      },5000) 
     }, 1);
   }
 

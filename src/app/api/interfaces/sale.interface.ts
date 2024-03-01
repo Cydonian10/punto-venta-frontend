@@ -1,14 +1,21 @@
 import { CustomerDto, EmployedDto } from "./user.interface";
 
-export interface SaleCrearDto {
+export enum StatusCompra {
+  debe,
+  pagado,
+  cotizacion
+}
+
+export interface CreateSaleDto {
   taxex:          number;
   date:           Date;
   customerId:     string;
   cashRegisterId: number;
-  saleDetails:    SaleDetailCrearDto[];
+  statusCompra: StatusCompra
+  saleDetails:    CreateSaleDetailDto[];
 }
 
-interface SaleDetailCrearDto {
+interface CreateSaleDetailDto {
   quantity:  number;
   productId: number;
   name:      string;
@@ -45,3 +52,4 @@ export interface SaleProductDto {
   productName:       string;
   productUnitSymbol: string;
 }
+

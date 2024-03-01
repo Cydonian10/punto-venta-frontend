@@ -6,7 +6,7 @@ import {Breakpoints,BreakpointObserver} from "@angular/cdk/layout"
 })
 export class LayoutService {
 
-  #open = signal(false);
+  #open = signal(true);
   public open = computed(() => this.#open());
 
   private displayNameMap = new Map([

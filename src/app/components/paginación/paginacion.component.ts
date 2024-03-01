@@ -12,19 +12,16 @@ import {
   standalone: true,
   imports: [],
   template: `
-    <span>Total: {{ totalPage }} / Page: {{ paginacion.page }} - Items por pagina: {{ paginacion.quantityRecordsPerPage }} </span>
+    <span
+      >Total: {{ totalPage }} / Page: {{ paginacion.page }} - Items por pagina:
+      {{ paginacion.quantityRecordsPerPage }}
+    </span>
     <div class="flex gap-3 items-start">
-      <button
-        (click)="previus()"
-        class="bg-red-500 text-white py-1.5 px-4 rounded-md"
-      >
+      <button (click)="previus()" class="btn-icon btn-icon-primary py-1.5 px-4">
         <i class="bx bx-skip-previous"></i>
       </button>
 
-      <button
-        (click)="next()"
-        class="bg-slate-800 text-white py-1.5 px-4 rounded-md"
-      >
+      <button (click)="next()" class="btn-icon btn-icon-primary py-1.5 px-4">
         <i class="bx bx-skip-next"></i>
       </button>
     </div>

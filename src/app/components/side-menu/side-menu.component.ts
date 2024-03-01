@@ -14,38 +14,48 @@ import { CdkAccordionModule } from '@angular/cdk/accordion';
       display: block;
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SideMenuComponent {
-
-  #layoutService = inject(LayoutService)
+  #layoutService = inject(LayoutService);
 
   public open = this.#layoutService.open;
   public expandedIndex = 0;
 
   public items: any[] = [
-    { name: "Dashboard", link: "/admin", icon: "bx bxs-dashboard" },
-    { name: "Productos", link: "/admin/products", icon: "bx bxl-product-hunt" },
-    { name: "Categorias", link: "/admin/categories", icon: "bx bxl-product-hunt" },
-    { name: "Compras", link: "/admin/purchases", icon: "bx bx-store-alt" },
-    { name: "Ventas", link: "/admin/sales", icon: "bx bx-book-open" },
-    { name: "Proveedores", link: "/admin/suppliers", icon: "bx bx-book-open" },
-    { name: "Cajas Registradoras", link: "/admin/cash-register", icon: "bx bx-book-open" },
-  ]
+    { name: 'Dashboard', link: '/admin', icon: 'bx bxs-dashboard' },
+    { name: 'Compras', link: '/admin/purchases', icon: 'bx bx-store-alt' },
+    { name: 'Ventas', link: '/admin/sales', icon: 'bx bx-book-open' },
+    { name: 'Proveedores', link: '/admin/suppliers', icon: 'bx bx-book-open' },
+    {
+      name: 'Cajas Registradoras',
+      link: '/admin/cash-register',
+      icon: 'bx bx-book-open',
+    },
+  ];
 
-  public pruba = [{
-    title: 'Articulos',
-    icon: "bx bxl-product-hunt",
-    links: [
-      { name: "Productos", link: "/admin/products", icon: "bx bxl-product-hunt" },
-      { name: "Categorias", link: "/admin/categories", icon: "bx bxl-product-hunt" },
-      { name: "Unit", link: "/admin/unit", icon: "bx bxl-product-hunt" },
-    ]
-  }
-  ]
+  public pruba = [
+    {
+      title: 'Articulos',
+      icon: 'bx bxl-product-hunt',
+      links: [
+        {
+          name: 'Productos',
+          link: '/admin/products',
+          icon: 'bx bxl-product-hunt',
+        },
+        {
+          name: 'Categorias',
+          
+          link: '/admin/categories',
+          icon: 'bx bxl-product-hunt',
+        },
+        { name: 'Unit', link: '/admin/unit', icon: 'bx bxl-product-hunt' },
+      ],
+    },
+  ];
 
   toogle() {
     this.#layoutService.toogle();
   }
-
 }

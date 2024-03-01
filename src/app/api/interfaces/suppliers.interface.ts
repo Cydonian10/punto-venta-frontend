@@ -1,8 +1,8 @@
 export interface SupplierDto {
-  id:number,
-  name:   string;
+  id: number;
+  name: string;
   adress: string;
-  phone:  string;
+  phone: string;
 }
 
-export interface SupplierCrearDto extends Omit<SupplierDto,"id"> {}
+export interface CreateSupplierDto extends Omit<SupplierDto, 'id'> {}

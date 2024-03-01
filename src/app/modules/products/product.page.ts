@@ -36,7 +36,7 @@ import { PriceUpdateComponent } from './components/price-update.component';
     PaginacionComponent,
   ],
   template: `
-    <div class="entrada">
+    <div class="entrada print:hidden">
       <app-title-create title="Productos" (onOpenDialog)="openDiloagCrear()">
         <app-product-filter
           (onQuitarFiltro)="quitarFiltro($event)"

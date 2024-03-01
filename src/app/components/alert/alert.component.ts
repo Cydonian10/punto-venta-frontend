@@ -7,7 +7,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   imports: [],
   template: `
      <div class="w-full flex items-center justify-center">
-        <div class="absolute z-50 top-0 mt-20 flex bg-gray-100 shadow-2xl rounded-lg entrada w-[500px]">
+        <div class="fixed z-50 top-0 mt-20 flex bg-slate-800 shadow-2xl rounded-lg entrada w-[500px]">
             <div [class]="alerts.color" class="icon flex justify-center items-center p-6 rounded-tr-3xl rounded-lg">
                 <div [class]="alerts.text" class="h-8 w-8 bg-white rounded-full flex items-center justify-center">
                   <i [class]='alerts.icon'></i>
@@ -16,11 +16,13 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
             <div class="flex items-center justify-between w-full gap-3 p-4 rounded-tr-lg rounded-br-lg">
                 <div class="flex flex-col">
                   <h2 [class]="alerts.text" class="font-bold">{{alerts.type}}</h2>
-                  <p class="text-gray-500 font-bold">
+                  <p class="text-white font-bold">
                   {{message}}
                   </p>
                 </div>
-                <div class="countdown">
+                <div class="countdown text-white">
+                  <div class="number">5</div>
+                  <div class="number">4</div>
                   <div class="number">3</div>
                   <div class="number">2</div>
                   <div class="number">1</div>

@@ -13,17 +13,18 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
       width:100%;
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputComponent {
-  @Input() label:string = ""
-  @Input() id:string = ""
-  @Input() control =  new FormControl()
-  @Input() type:string = "text"
+  @Input() label: string = '';
+  @Input() id: string = '';
+  @Input() control = new FormControl();
+  @Input() type: string = 'text';
+  @Input() placeholder: string = '';
 
-  public errorMessages: Record<string,string> =  {
-    required : "The field es required",
-    email: "The email es invalid",
-    minlength: "Requried 6 characters minimo"
-  }
+  public errorMessages: Record<string, string> = {
+    required: 'The field es required',
+    email: 'The email es invalid',
+    minlength: 'Requried 6 characters minimo',
+  };
 }

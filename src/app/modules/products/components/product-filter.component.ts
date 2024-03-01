@@ -56,15 +56,11 @@ import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
             <button
               (click)="quitarFiltro()"
               type="button"
-              class="bg-red-400 py-1.5 px-3 rounded-md text-white text-sm"
+              class="btn-ghost ghost-danger py-1.5 px-3"
             >
               Quitar
             </button>
-            <button
-              class="bg-indigo-400 py-1.5 px-3 rounded-md text-white text-sm"
-            >
-              Aplicar
-            </button>
+            <button class="btn-ghost ghost-primary py-1.5 px-3">Aplicar</button>
           </div>
         </form>
       </div>
@@ -99,7 +95,7 @@ export class ProductFilterComponent {
       name: null,
       stock: null,
       price: null,
-    })
+    });
     this.onQuitarFiltro.emit({
       name: null,
       stock: null,
