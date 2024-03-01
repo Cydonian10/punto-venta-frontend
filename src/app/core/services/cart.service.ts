@@ -107,4 +107,9 @@ export class CartService {
   activeCashRegister(value: CashRegisterDto | null) {
     this.#cashRegisterActive.set(value);
   }
+
+  clearSale() {
+    this._shoppingCart.set([]);
+    this._customerActive.set(null);
+  }
 }

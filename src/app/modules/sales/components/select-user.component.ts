@@ -1,4 +1,5 @@
 import { AuthUser, User } from '@/api/interfaces/auth.interface';
+import { UserFull } from '@/api/interfaces/user.interface';
 import { UserService } from '@/api/services/user.service';
 import { TableComponent } from '@/components/table/table.component';
 import { DialogLayout } from '@/layouts/dialog/dialog.layout';
@@ -29,8 +30,11 @@ import {
             {{ user.email }}
           </td>
           <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            <button (click)="handleActiveUser(user)" class="btn-icon btn-icon-primary px-2 py-1">
-             <i class='bx bxs-add-to-queue'></i>
+            <button
+              (click)="handleActiveUser(user)"
+              class="btn-icon btn-icon-primary px-2 py-1"
+            >
+              <i class="bx bxs-add-to-queue"></i>
             </button>
           </td>
         </tr>
@@ -49,7 +53,7 @@ export class SelecUserComponent {
   #userService = inject(UserService);
 
   public headers = ['N°', 'Nombre', 'Email', 'Acciones'];
-  public users = signal<User[]>([]);
+  public users = signal<UserFull[]>([]);
 
   constructor(private dialogRef: DialogRef<any>) {}
 
@@ -63,7 +67,7 @@ export class SelecUserComponent {
     this.dialogRef.close(false);
   }
 
-  handleActiveUser(user:User) {
-    this.dialogRef.close(user)
+  handleActiveUser(user: UserFull) {
+    this.dialogRef.close(user);
   }
 }

@@ -39,9 +39,15 @@ import { ProductQuantityComponent } from '@/components/product-quantity/product-
       (onOpenDialog)="misVentas()"
     >
       <span
-        class="block bg-teal-300 px-4 py-2 rounded-md border-teal-400 text-gray-800 font-bold"
+        class="block bg-teal-300 py-1 px-3 md:py-2.5 text-sm md:text-base md:px-5 rounded-md border-teal-400 text-gray-800 font-bold"
         >{{ cashRegisterActive()?.name | titlecase }}</span
       >
+      <button
+        class="btn py-1 px-3 md:py-2.5 text-sm md:text-base md:px-5 btn-danger"
+        (click)="limpiarSale()"
+      >
+        Limpiar
+      </button>
     </app-title-create>
 
     <div class="entrada lg:flex lg:items-start">
@@ -83,11 +89,13 @@ import { ProductQuantityComponent } from '@/components/product-quantity/product-
               <h1
                 class="text-xl font-semibold text-gray-900 sm:text-3xl flex gap-5 items-center"
               >
-                <span class="block">Your Cart </span>
+                <span class="block">Cliente: </span>
+                @if(customerActive()) {
                 <span
-                  class="block text-sm bg-indigo-300 px-4 py-2 rounded-md border-indigo-400 text-gray-800 font-bold"
+                  class="block text-sm bg-indigo-300 px-4 py-2 rounded-md border-indigo-500 border-2 text-gray-700 font-bold"
                   >{{ customerActive()?.email | titlecase }}</span
                 >
+                }
               </h1>
             </header>
 
@@ -344,13 +352,15 @@ export default class SalePage {
     this.#saleService.generateSale(createSale).subscribe({
       next: () => {
         this.#alertService.showAlertSuccess('Venta realizada');
-        this.#cartService.activeCustomer(null);
-        this.#cartService.clearShopping();
         this.products.set([]);
       },
       error: (error) => {
         this.#alertService.showAlertError(error.error.error);
       },
     });
+  }
+
+  limpiarSale() {
+    this.#cartService.clearSale();
   }
 }

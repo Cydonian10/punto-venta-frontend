@@ -1,55 +1,53 @@
-import { CustomerDto, EmployedDto } from "./user.interface";
+import { CustomerDto, EmployedDto } from './user.interface';
 
 export enum StatusCompra {
   debe,
   pagado,
-  cotizacion
+  cotizacion,
 }
 
 export interface CreateSaleDto {
-  taxex:          number;
-  date:           Date;
-  customerId:     string;
+  taxex: number;
+  date: Date;
+  customerId: string;
   cashRegisterId: number;
-  statusCompra: StatusCompra
-  saleDetails:    CreateSaleDetailDto[];
+  statusCompra: StatusCompra;
+  saleDetails: CreateSaleDetailDto[];
 }
 
 interface CreateSaleDetailDto {
-  quantity:  number;
+  quantity: number;
   productId: number;
-  name:      string;
+  name: string;
   unitPrice: number;
-  discount:  number;
+  discount: number;
 }
 
-
 export interface SaleDto {
-  id:            string;
-  totalPrice:    number;
-  taxes:         number;
-  date:          Date;
+  id: string;
+  totalPrice: number;
+  taxes: number;
+  date: Date;
   vaucherNumber: number;
-  customer:      CustomerDto;
-  employed:      EmployedDto;
-  cashRegister:  SaleCashRegister;
-  products:      SaleProductDto[];
+  customer: CustomerDto;
+  employed: EmployedDto;
+  cashRegister: SaleCashRegister;
+  products: SaleProductDto[];
 }
 
 export interface SaleCashRegister {
   initialCash: number;
-  date:        Date;
-  open:        boolean;
+  date: Date;
+  open: boolean;
 }
 
 export interface SaleProductDto {
-  quantity:          number;
-  subTotal:          number;
-  descuento:         number;
-  productStock:      number;
-  productSalePrice:  number;
-  productSize:       string;
-  productName:       string;
+  quantity: number;
+  subTotal: number;
+  descuento: number;
+  productStock: number;
+  productSalePrice: number;
+  productSize: string;
+  productName: string;
   productUnitSymbol: string;
 }
-

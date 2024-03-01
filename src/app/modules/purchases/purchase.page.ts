@@ -72,7 +72,7 @@ import { PurchaseService } from '@/api/services/purchase.service';
                 <h1
                   class="text-xl font-semibold text-gray-900 sm:text-3xl flex gap-5 items-center"
                 >
-                  <span class="block">Your Cart </span>
+                  <span class="block">Proveedor: </span>
                   <span
                     class="block text-sm bg-indigo-300 px-4 py-2 rounded-md border-indigo-400 text-gray-800 font-bold"
                     >{{ supplierActive()?.name | titlecase }}</span
