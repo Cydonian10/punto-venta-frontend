@@ -7,6 +7,7 @@ import {
   Output,
   computed,
   input,
+  model,
   signal,
 } from '@angular/core';
 

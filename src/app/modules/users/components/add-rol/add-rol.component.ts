@@ -1,14 +1,13 @@
-import { Rol } from '@/api/interfaces/user.interface';
+import { Rol, UserFull } from '@/api/interfaces/user.interface';
 import { OverlayModule } from '@angular/cdk/overlay';
 import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Output,
-  effect,
   inject,
   input,
-  signal,
+  model,
 } from '@angular/core';
 import {
   FormArray,
@@ -68,13 +67,13 @@ export class AddRolComponent {
     this.opciones.forEach((op) => {
       this.form.addControl(op.value, new FormControl(false));
     });
+  }
 
-    effect(() => {
-      this.roles().forEach((role: any) => {
-        if (this.form.get(role)) {
-          this.form.get(role)!.patchValue(true);
-        }
-      });
+  ngOnInit() {
+    this.roles().forEach((role: any) => {
+      if (this.form.get(role)) {
+        this.form.get(role)!.patchValue(true);
+      }
     });
   }
 
