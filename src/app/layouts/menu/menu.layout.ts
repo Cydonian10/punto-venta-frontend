@@ -53,8 +53,6 @@ export class MenuLayout {
   @Input() text: string = 'cambiar';
   public open = signal(false);
 
-  @Output() onMenuClose = new EventEmitter();
-
   toogle() {
     this.open.update((x) => !x);
   }

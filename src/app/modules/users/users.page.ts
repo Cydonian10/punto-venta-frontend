@@ -60,9 +60,8 @@ import { MenuLayout } from '@/layouts/menu/menu.layout';
             </div>
             <menu-layout text="+">
               <app-add-rol
-                [roles]="user.roles"
-                [email]="user.email"
-                (onSubmitRole)="handleSubmitRole($event)"
+                [user]="user"
+                (onSubmitRole)="handleSubmitRole($event, user.email)"
               />
             </menu-layout>
           </td>
@@ -108,12 +107,12 @@ export default class UserPage implements OnInit {
     });
   }
 
-  handleSubmitRole(event: RoleAsignarDto) {
-    this.#userService.addRol(event).subscribe(() => {
+  handleSubmitRole(roles: string[], email: string) {
+    this.#userService.addRol({ email, roles }).subscribe(() => {
       this.users.update((x) =>
         x.map((y) => {
-          if (y.email === event.email) {
-            y.roles = event.roles;
+          if (y.email === email) {
+            y.roles = roles;
           }
           return y;
         })

@@ -5,6 +5,7 @@ import {
   Component,
   EventEmitter,
   Output,
+  effect,
   inject,
   input,
   model,
@@ -17,6 +18,8 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Input } from '@angular/core';
+import { SelectionModel } from '@angular/cdk/collections';
+import { JsonPipe } from '@angular/common';
 
 interface Roles {
   [key: string]: boolean;
@@ -25,18 +28,27 @@ interface Roles {
 @Component({
   selector: 'app-add-rol',
   standalone: true,
-  imports: [OverlayModule, ReactiveFormsModule],
+  imports: [OverlayModule, ReactiveFormsModule, JsonPipe],
   template: `
-    <form [formGroup]="form" (ngSubmit)="hanldeSubmit()">
+    <form>
       @for (op of opciones; track $index) {
       <div>
         <label>
-          <input type="checkbox" [formControlName]="op.value" />
-          {{ op.label }}
+          <input
+            type="checkbox"
+            [checked]="selection.isSelected(op)"
+            (change)="selection.toggle(op)"
+          />
+          {{ op }}
         </label>
       </div>
       }
-      <button class="btn-ghost ghost ghost-primary py-1.5 mt-4" type="submit">
+
+      <button
+        (click)="this.onSubmitRole.emit(this.selection.selected)"
+        class="btn-ghost ghost ghost-primary py-1.5 mt-4"
+        type="button"
+      >
         Enviar
       </button>
     </form>
@@ -49,39 +61,15 @@ interface Roles {
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddRolComponent {
-  #fb = inject(FormBuilder);
-  @Input() email: string = '';
+  public user = input.required<UserFull>();
 
-  roles = input.required<string[]>();
+  selection = new SelectionModel<any>(true, []);
 
   @Output() onSubmitRole = new EventEmitter();
 
-  public form = this.#fb.group({});
-
-  opciones = Object.keys(Rol).map((key) => ({
-    label: key,
-    value: Rol[key as keyof typeof Rol],
-  }));
-
-  constructor() {
-    this.opciones.forEach((op) => {
-      this.form.addControl(op.value, new FormControl(false));
-    });
-  }
+  opciones = Object.keys(Rol).map((key) => key);
 
   ngOnInit() {
-    this.roles().forEach((role: any) => {
-      if (this.form.get(role)) {
-        this.form.get(role)!.patchValue(true);
-      }
-    });
-  }
-
-  hanldeSubmit() {
-    const roles = this.form.getRawValue() as Roles;
-
-    const keysWithTrueValues = Object.keys(roles).filter((key) => roles[key]);
-
-    this.onSubmitRole.emit({ email: this.email, roles: keysWithTrueValues });
+    this.selection.select(...this.user().roles);
   }
 }
