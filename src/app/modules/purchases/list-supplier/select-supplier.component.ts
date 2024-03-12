@@ -1,4 +1,3 @@
-import { TableComponent } from '@/components/table/table.component';
 import { DialogLayout } from '@/layouts/dialog/dialog.layout';
 import {
   ChangeDetectionStrategy,
@@ -9,45 +8,26 @@ import {
 import { DialogRef } from '@angular/cdk/dialog';
 import { SupplierDto } from '@/api/interfaces/suppliers.interface';
 import { SupplierService } from '@/api/services/supplier.service';
+import { TableDataComponent } from '@/components/table/table-data.component';
+import { KeysWithoutId } from '@/helpers/toTable';
 
 @Component({
   selector: 'app-select-supplier',
   standalone: true,
-  imports: [DialogLayout, TableComponent],
+  imports: [DialogLayout, TableDataComponent],
   template: `
     <dialog-layout title="Selecionar Proveedor" (onClose)="closeDialog()">
-      <app-table [header]="header">
-        @for (supplier of suppliers(); track $index) {
-        <tr class="hover:bg-gray-100 transition-all">
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            {{ $index + 1 }}
-          </td>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            {{ supplier.name }}
-          </td>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            {{ supplier.phone }}
-          </td>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            {{ supplier.adress }}
-          </td>
-          <td>
-            <div class="flex items-start gap-2">
-              <button
-                (click)="handleSelectSupplier(supplier)"
-                class="btn-icon btn-icon-primary px-2 py-1"
-              >
-                <i class="bx bxs-add-to-queue"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-        }
-      </app-table>
+      <table-data
+        [columns]="columns"
+        [data]="suppliers()"
+        [select]="true"
+        [actions]="false"
+        (onSelect)="handleSelectSupplier($event)"
+      />
     </dialog-layout>
   `,
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,
@@ -56,7 +36,7 @@ import { SupplierService } from '@/api/services/supplier.service';
 export class SelectSupplierComponent {
   #supplierService = inject(SupplierService);
 
-  public header = ['N°', 'Nombre', 'Telefono', 'Avenida', 'Acciones'];
+  public columns: KeysWithoutId<SupplierDto>[] = ['name', 'phone', 'adress'];
   public suppliers = signal<SupplierDto[]>([]);
 
   constructor(private dialogRef: DialogRef<any>) {}

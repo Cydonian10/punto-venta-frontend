@@ -1,9 +1,12 @@
+import { Rol } from '@/api/interfaces/user.interface';
+import { SelectionModel } from '@angular/cdk/collections';
 import { OverlayModule } from '@angular/cdk/overlay';
 import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   Output,
   computed,
   input,
@@ -36,14 +39,36 @@ import {
       (overlayOutsideClick)="toogle()"
     >
       <div
-        class="py-4 px-7  shadow-lg border shadow-indigo-500/40 bg-white rounded-md"
+        class="py-4 px-7  shadow-lg border shadow-indigo-500/40 bg-white rounded-md w-[200px]"
       >
-        <ng-content />
+        <h3 class="text-sm font-bold text-center mb-3">Agrega un rol</h3>
+        <form>
+          @for (op of opciones; track $index) {
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  [checked]="selection.isSelected(op)"
+                  (change)="selection.toggle(op)"
+                />
+                {{ op }}
+              </label>
+            </div>
+          }
+
+          <button
+            (click)="this.onSubmitRole.emit(this.selection.selected)"
+            class="btn-ghost ghost ghost-primary py-1.5 mt-4"
+            type="button"
+          >
+            Enviar
+          </button>
+        </form>
       </div>
     </ng-template>
   `,
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,
@@ -55,5 +80,12 @@ export class MenuLayout {
 
   toogle() {
     this.open.update((x) => !x);
+    this.selection.clear();
   }
+
+  selection = new SelectionModel<any>(true, []);
+
+  @Output() onSubmitRole = new EventEmitter();
+
+  opciones = Object.keys(Rol).map((key) => key);
 }

@@ -1,6 +1,7 @@
 export interface CustomerDto {
   id: string;
   email: string;
+  name: string;
 }
 
 export interface EmployedDto {

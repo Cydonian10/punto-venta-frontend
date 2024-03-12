@@ -1,10 +1,10 @@
 export interface AuthRegisterDto {
   email: string;
   password: string;
-  username: string;
-  birthday: Date;
-  salary: number;
-  rol: string;
+  name: string;
+  birthday?: Date;
+  salary?: number;
+  rol?: string;
 }
 
 export interface AuthLoginDto {

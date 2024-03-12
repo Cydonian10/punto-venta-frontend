@@ -13,11 +13,18 @@ import { Dialog } from '@angular/cdk/dialog';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CreateSupplieComponent } from './components/supplier-create.component';
 import { AlertService } from '@/core/services/alert.service';
+import { TableDataComponent } from '@/components/table/table-data.component';
+import { KeysWithoutId } from '@/helpers/toTable';
 
 @Component({
   selector: 'app-supplier',
   standalone: true,
-  imports: [TitleCreateComponent, TableComponent, OverlayModule],
+  imports: [
+    TitleCreateComponent,
+    TableComponent,
+    OverlayModule,
+    TableDataComponent,
+  ],
   template: `
     <div class="entrada">
       <app-title-create
@@ -25,44 +32,15 @@ import { AlertService } from '@/core/services/alert.service';
         (onOpenDialog)="openDiloagCrear()"
       ></app-title-create>
 
-      <app-table [header]="header">
-        @for (supplier of suppliers(); track $index) {
-        <tr class="hover:bg-gray-100 transition-all">
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            {{ $index + 1 }}
-          </td>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            {{ supplier.name }}
-          </td>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            {{ supplier.phone }}
-          </td>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            {{ supplier.adress }}
-          </td>
-          <td>
-            <div class="flex items-start gap-2">
-              <button
-                class="btn-icon btn-icon-success px-2 py-1"
-                (click)="openDiloagCrear(supplier)"
-              >
-                <i class="bx bxs-pencil"></i>
-              </button>
-              <button
-                class="btn-icon btn-icon-danger px-2 py-1"
-                (click)="deleteProduct(supplier.id)"
-              >
-                <i class="bx bxs-trash-alt"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-        }
-      </app-table>
+      <table-data
+        [columns]="columns"
+        [data]="suppliers()"
+        (onUpdate)="openDiloagCrear($event)"
+      />
     </div>
   `,
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,
@@ -74,6 +52,7 @@ export default class SupplierPage implements OnInit {
   #alertService = inject(AlertService);
 
   public header = ['N°', 'Nombre', 'Telefono', 'Avenida', 'Acciones'];
+  public columns: KeysWithoutId<SupplierDto>[] = ['name', 'phone', 'adress'];
   public suppliers = signal<SupplierDto[]>([]);
 
   ngOnInit(): void {
@@ -82,12 +61,14 @@ export default class SupplierPage implements OnInit {
     });
   }
 
-  deleteProduct(arg0: any) {
+  deleteSupplier(arg0: any) {
     throw new Error('Method not implemented.');
   }
+
   openDiloagCrear(supplier?: SupplierDto) {
     const dialogRef = this.#dialog.open(CreateSupplieComponent, {
-      width: '100%',
+      width: '400px',
+      backdropClass: ['bg-black/60'],
       data: supplier,
       disableClose: true,
     });

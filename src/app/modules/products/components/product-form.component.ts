@@ -20,7 +20,10 @@ import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   imports: [DialogLayout, InputComponent, ReactiveFormsModule],
   template: `
-    <dialog-layout [title]="this.data ? 'Actualizar':'Crear'" (onClose)="closeDialog()">
+    <dialog-layout
+      [title]="this.data ? 'Actualizar' : 'Crear'"
+      (onClose)="closeDialog()"
+    >
       <form [formGroup]="form" (ngSubmit)="handleSubmit()" class="space-y-3">
         <!-- dividir -->
         <div class="flex items-start gap-4">
@@ -66,7 +69,7 @@ import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
             label="Tamaño"
             type="text"
             [control]="form.controls.size"
-          />  
+          />
         </div>
         <div class="flex items-start gap-4">
           <div class="w-full">
@@ -75,7 +78,7 @@ import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
             </label>
             <select formControlName="categoryId" class="input">
               @for (category of categories(); track $index) {
-              <option [value]="category.id">{{ category.name }}</option>
+                <option [value]="category.id">{{ category.name }}</option>
               }
             </select>
           </div>
@@ -85,7 +88,7 @@ import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
             </label>
             <select formControlName="unitMeasurementId" class="input">
               @for (unit of units(); track $index) {
-              <option [value]="unit.id">{{ unit.name }}</option>
+                <option [value]="unit.id">{{ unit.name }}</option>
               }
             </select>
           </div>
@@ -99,16 +102,16 @@ import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 
         <div class="flex items-center justify-end">
           @if (data) {
-          <button class="btn btn-secondary w-[200px]">Actulizar</button>
-          }@else {
-          <button class="btn btn-secondary w-[200px]">Crear</button>
+            <button class="btn btn-secondary w-[200px]">Actulizar</button>
+          } @else {
+            <button class="btn btn-secondary w-[200px]">Crear</button>
           }
         </div>
       </form>
     </dialog-layout>
   `,
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,
@@ -137,7 +140,7 @@ export class ProductCrearFormComponent implements OnInit {
     @Inject(DIALOG_DATA) public data: ProductDto | undefined,
     private fb: FormBuilder,
     private categoryService: CategoryService,
-    private unitService: UnitService
+    private unitService: UnitService,
   ) {
     if (data) {
       this.form.patchValue({
@@ -163,8 +166,8 @@ export class ProductCrearFormComponent implements OnInit {
   }
 
   handleSubmit() {
-    if(this.data) {
-      this.dialogRef.close({...this.form.getRawValue(),id:this.data.id});
+    if (this.data) {
+      this.dialogRef.close({ ...this.form.getRawValue(), id: this.data.id });
     }
     this.dialogRef.close(this.form.getRawValue());
   }

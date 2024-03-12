@@ -54,12 +54,11 @@ import { PurchaseService } from '@/api/services/purchase.service';
 
           <div class="mt-4 flex flex-col gap-1">
             @for (product of products(); track product.id) {
-
-            <app-product-quantity
-              [product]="product"
-              (onActiveInput)="activeInput($event)"
-              (onAddProduct)="agregarProduct($event)"
-            />
+              <app-product-quantity
+                [product]="product"
+                (onActiveInput)="activeInput($event)"
+                (onAddProduct)="agregarProduct($event)"
+              />
             }
           </div>
         </section>
@@ -82,83 +81,87 @@ import { PurchaseService } from '@/api/services/purchase.service';
 
               <div class="mt-8">
                 <ul class="space-y-4">
-                  @for (itemCart of comprasCart() ; track $index) {
-                  <li class="flex items-center gap-4">
-                    <img
-                      src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=830&q=80"
-                      alt=""
-                      class="size-16 rounded object-cover"
-                    />
+                  @for (itemCart of comprasCart(); track $index) {
+                    <li class="flex items-center gap-4">
+                      <img
+                        src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=830&q=80"
+                        alt=""
+                        class="size-16 rounded object-cover"
+                      />
 
-                    <div>
-                      <h3 class="text-sm text-gray-900">
-                        {{ itemCart.productId }}
-                      </h3>
+                      <div>
+                        <h3 class="text-sm text-gray-900">
+                          {{ itemCart.productId }}
+                        </h3>
 
-                      <dl class="mt-0.5 space-y-px text-[10px] text-gray-600">
-                        <div>
-                          <dt class="inline">Precio:</dt>
-                          <dd class="inline">{{ itemCart.purchasePrice }}</dd>
-                        </div>
+                        <dl class="mt-0.5 space-y-px text-[10px] text-gray-600">
+                          <div>
+                            <dt class="inline">Precio:</dt>
+                            <dd class="inline">{{ itemCart.purchasePrice }}</dd>
+                          </div>
 
-                        <div>
-                          <dt class="inline">Color:</dt>
-                          <dd class="inline">White</dd>
-                        </div>
-                      </dl>
-                    </div>
+                          <div>
+                            <dt class="inline">Color:</dt>
+                            <dd class="inline">White</dd>
+                          </div>
+                        </dl>
+                      </div>
 
-                    <div class="flex flex-1 items-center justify-end gap-2">
-                      <form>
-                        <label for="Line1Qty" class="sr-only"> Quantity </label>
+                      <div class="flex flex-1 items-center justify-end gap-2">
+                        <form>
+                          <label for="Line1Qty" class="sr-only">
+                            Quantity
+                          </label>
 
-                        <input
-                          type="number"
-                          min="1"
-                          [value]="itemCart.quantity"
-                          id="Line1Qty"
-                          class="h-8 w-12 rounded border-gray-200 bg-gray-50 p-0 text-center text-xs text-gray-600 [-moz-appearance:_textfield] focus:outline-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
-                        />
-                      </form>
+                          <input
+                            type="number"
+                            min="1"
+                            [value]="itemCart.quantity"
+                            id="Line1Qty"
+                            class="h-8 w-12 rounded border-gray-200 bg-gray-50 p-0 text-center text-xs text-gray-600 [-moz-appearance:_textfield] focus:outline-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
+                          />
+                        </form>
 
-                      <button
-                        (click)="removeProduct(itemCart)"
-                        class="text-gray-600 transition hover:text-red-600"
-                      >
-                        <i class="bx bx-trash"></i>
-                      </button>
-                    </div>
-                  </li>
+                        <button
+                          (click)="removeProduct(itemCart)"
+                          class="text-gray-600 transition hover:text-red-600"
+                        >
+                          <i class="bx bx-trash"></i>
+                        </button>
+                      </div>
+                    </li>
                   }
                 </ul>
 
-                @if(comprasCart().length > 0){
-                <div
-                  class="mt-8 flex justify-end border-t border-gray-100 pt-8"
-                >
-                  <div class="w-screen max-w-lg space-y-4">
-                    <dl class="space-y-0.5 text-sm text-gray-700">
-                      <div class="flex justify-between !text-base font-medium">
-                        <dt>Total</dt>
-                        <dd>S/ {{ total().toFixed(2) }}</dd>
-                      </div>
-                    </dl>
+                @if (comprasCart().length > 0) {
+                  <div
+                    class="mt-8 flex justify-end border-t border-gray-100 pt-8"
+                  >
+                    <div class="w-screen max-w-lg space-y-4">
+                      <dl class="space-y-0.5 text-sm text-gray-700">
+                        <div
+                          class="flex justify-between !text-base font-medium"
+                        >
+                          <dt>Total</dt>
+                          <dd>S/ {{ total().toFixed(2) }}</dd>
+                        </div>
+                      </dl>
 
-                    <div class="flex justify-end gap-4">
-                      <button
-                        class="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
-                      >
-                        Cotizar
-                      </button>
-                      <button
-                        (click)="handlePurchaseSubmit()"
-                        class="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
-                      >
-                        Pagar
-                      </button>
+                      <div class="flex justify-end gap-4">
+                        <button
+                          class="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
+                        >
+                          Cotizar
+                        </button>
+                        <button
+                          (click)="handlePurchaseSubmit()"
+                          class="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
+                        >
+                          Pagar
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
                 }
               </div>
             </div>
@@ -168,7 +171,7 @@ import { PurchaseService } from '@/api/services/purchase.service';
     </div>
   `,
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,
@@ -196,8 +199,8 @@ export default class PurchasePage {
             name: resp,
             price: null,
             stock: null,
-          })
-        )
+          }),
+        ),
       )
       .subscribe((resp) => {
         this.products.set(resp);
@@ -221,7 +224,7 @@ export default class PurchasePage {
           x.inputActive = true;
         }
         return x;
-      })
+      }),
     );
   }
 
@@ -231,7 +234,8 @@ export default class PurchasePage {
 
   selectSupplier() {
     const dialogRef = this.#dialog.open(SelectSupplierComponent, {
-      width: '100%',
+      width: '700px',
+      backdropClass: 'bg-black/60',
       disableClose: true,
     });
 

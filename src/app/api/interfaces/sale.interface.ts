@@ -35,6 +35,19 @@ export interface SaleDto {
   products: SaleProductDto[];
 }
 
+export interface SaleTableDto {
+  id: string;
+  totalPrice: number;
+  taxes: number;
+  date: Date;
+  vaucherNumber: number;
+  customer: CustomerDto;
+  customerName: string;
+  employed: EmployedDto;
+  cashRegister: SaleCashRegister;
+  products: SaleProductDto[];
+}
+
 export interface SaleCashRegister {
   initialCash: number;
   date: Date;

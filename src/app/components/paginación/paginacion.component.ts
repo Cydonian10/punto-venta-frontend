@@ -12,8 +12,8 @@ import {
   standalone: true,
   imports: [],
   template: `
-    <span
-      >Total: {{ totalPage }} / Page: {{ paginacion.page }} - Items por pagina:
+    <span class="text-sm">
+      Total: {{ totalPage }} / Page: {{ paginacion.page }} - Items por pagina:
       {{ paginacion.quantityRecordsPerPage }}
     </span>
     <div class="flex gap-3 items-start">
@@ -27,13 +27,13 @@ import {
     </div>
   `,
   styles: `
-   :host {
+    :host {
       display: flex;
-      margin: 20px 0px;
-      justify-content:center;
-      align-items:center;
+      margin-top: 20px;
+      justify-content: center;
+      align-items: center;
       flex-direction: column;
-      gap: 4px
+      gap: 4px;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

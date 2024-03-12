@@ -12,7 +12,7 @@ import {
   imports: [],
   template: `
     <div
-      class="shadow-lg rounded-md relative bg-white p-10 w-9/12 lg:w-6/12 m-auto  outline-none"
+      class="shadow-lg rounded-xl relative bg-white p-10  m-auto  outline-none shadow-gray-500/50"
     >
       <button
         (click)="closeDialog()"
@@ -25,8 +25,9 @@ import {
     </div>
   `,
   styles: `
-   :host {
+    :host {
       display: block;
+      // @apply bg-white rounded-lg shadow-xl shadow-gray-600/50;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

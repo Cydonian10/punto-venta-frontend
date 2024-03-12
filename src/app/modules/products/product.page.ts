@@ -1,6 +1,7 @@
 import {
   ProductCrearDto,
   ProductDto,
+  ProductTable,
   ProductUpdateDto,
 } from '@/api/interfaces/products.interface';
 import { ProductService } from '@/api/services/product.service';
@@ -10,6 +11,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
+  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -23,6 +25,8 @@ import { PageDto } from '@/api/interfaces/page.interface';
 import { PaginacionComponent } from '@/components/paginación/paginacion.component';
 import { ProductHistoryComponent } from './components/product-history.component';
 import { PriceUpdateComponent } from './components/price-update.component';
+import { TableDataComponent } from '@/components/table/table-data.component';
+import { KeysWithoutId } from '@/helpers/toTable';
 
 @Component({
   selector: 'app-product',
@@ -34,6 +38,7 @@ import { PriceUpdateComponent } from './components/price-update.component';
     OverlayModule,
     ProductFilterComponent,
     PaginacionComponent,
+    TableDataComponent,
   ],
   template: `
     <div class="entrada print:hidden">
@@ -44,63 +49,12 @@ import { PriceUpdateComponent } from './components/price-update.component';
         />
       </app-title-create>
 
-      <app-table [header]="header">
-        @for (product of products(); track $index) {
-        <tr class="hover:bg-gray-100 transition-all">
-          <td
-            class="sticky inset-y-0 start-0 bg-white whitespace-nowrap px-4 py-2 font-medium text-gray-900"
-          >
-            {{ product.name }}
-          </td>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            {{ product.stock }}
-          </td>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            <button
-              type="button"
-              (click)="updatePrice(product.id,product.salePrice)"
-              class="bg-amber-500/30 rounded-md py-1 px-1 w-[70px]"
-            >
-              {{ product.salePrice }}
-            </button>
-          </td>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            {{ product.purchasePrice }}
-          </td>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            {{ product.size }}
-          </td>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            {{ product.unitMeasurement.name }}
-          </td>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            {{ product.category.name }}
-          </td>
-          <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-            <div class="flex items-start gap-2">
-              <button
-                class="btn-icon btn-icon-success px-2 py-1"
-                (click)="openDiloagCrear(product)"
-              >
-                <i class="bx bxs-pencil"></i>
-              </button>
-              <button
-                class="btn-icon btn-icon-danger px-2 py-1"
-                (click)="deleteProduct(product.id)"
-              >
-                <i class="bx bxs-trash-alt"></i>
-              </button>
-              <button
-                class="btn-icon btn-icon-primary px-2 py-1"
-                (click)="historyProduct(product.id)"
-              >
-                <i class="bx bx-detail"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-        }
-      </app-table>
+      <table-data
+        [columns]="columns"
+        [data]="productDataTable()"
+        (onUpdate)="openDiloagCrear($event)"
+        (onDelete)="deleteProduct($event)"
+      />
 
       <div>
         <app-paginacion
@@ -113,7 +67,7 @@ import { PriceUpdateComponent } from './components/price-update.component';
     </div>
   `,
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,
@@ -125,16 +79,30 @@ export default class ProductPage implements OnInit {
   #alertService = inject(AlertService);
 
   public products = signal<ProductDto[]>([]);
-  public header = [
-    'Nombre',
-    'Stock',
-    'Precio Venta',
-    'Precio Compra',
-    'Tamaño',
-    'Unidad',
-    'Categoria',
-    'Actions',
+
+  productDataTable = computed(() =>
+    this.products().map(
+      (x) =>
+        ({
+          ...x,
+          unit: x.unitMeasurement.name,
+          categoryName: x.category.name,
+        }) as ProductTable,
+    ),
+  );
+
+  public columns: KeysWithoutId<ProductTable>[] = [
+    'name',
+    'salePrice',
+    'purchasePrice',
+    'type',
+    'description',
+    'size',
+    'categoryName',
+    'stock',
+    'unit',
   ];
+
   public pagination = signal<PageDto>({ page: 1, quantityRecordsPerPage: 4 });
   public totalPage = signal<number>(0);
 
@@ -163,7 +131,8 @@ export default class ProductPage implements OnInit {
 
   openDiloagCrear(data?: ProductDto) {
     const dialogRef = this.#dialog.open(ProductCrearFormComponent, {
-      width: '100%',
+      width: '700px',
+      backdropClass: 'bg-black/60',
       data,
       disableClose: true,
     });
@@ -209,7 +178,7 @@ export default class ProductPage implements OnInit {
     });
   }
 
-  updatePrice(id:number,precio:number) {
+  updatePrice(id: number, precio: number) {
     const dialogRef = this.#dialog.open(PriceUpdateComponent, {
       width: '100%',
       data: { id, precio },
@@ -217,18 +186,21 @@ export default class ProductPage implements OnInit {
     });
 
     dialogRef.closed.subscribe((resp: any) => {
-      if(resp === undefined) { return }
-      this.#productService.updateSalePrice(resp,id).subscribe( () => {
-        this.products.update( x => x.map(x => {
-          if(x.id === id) {
-            x.salePrice = parseFloat(resp)
-          }
-          return x
-        }))
-        this.#alertService.showAlertSuccess("Precio Actualizado")
-      })
-    })
-
+      if (resp === undefined) {
+        return;
+      }
+      this.#productService.updateSalePrice(resp, id).subscribe(() => {
+        this.products.update((x) =>
+          x.map((x) => {
+            if (x.id === id) {
+              x.salePrice = parseFloat(resp);
+            }
+            return x;
+          }),
+        );
+        this.#alertService.showAlertSuccess('Precio Actualizado');
+      });
+    });
   }
 
   deleteProduct(id: number) {
@@ -257,7 +229,7 @@ export default class ProductPage implements OnInit {
     });
   }
 
-  quitarFiltro(value: any) {
+  quitarFiltro(value?: any) {
     this.getProducts();
   }
 }

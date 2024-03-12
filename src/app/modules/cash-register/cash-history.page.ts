@@ -1,7 +1,9 @@
 import { CashRegisterHistoryDto } from '@/api/interfaces/cash-register.interface';
 import { CashRegisterService } from '@/api/services/cash-register.service';
+import { TableDataComponent } from '@/components/table/table-data.component';
 import { TableComponent } from '@/components/table/table.component';
 import { TitleCreateComponent } from '@/components/title/title-create.component';
+import { KeysWithoutId } from '@/helpers/toTable';
 import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -15,39 +17,21 @@ import {
 @Component({
   selector: 'app-cash-history',
   standalone: true,
-  imports: [TitleCreateComponent, TableComponent, DatePipe],
+  imports: [TitleCreateComponent, TableComponent, DatePipe, TableDataComponent],
   template: `
     <app-title-create
       title="Historial De Caja Registradora"
       (onOpenDialog)="openDiloagCrear()"
     />
 
-    <app-table [header]="header">
-      @for (item of cashRegisters(); track $index) {
-      <tr class="hover:bg-gray-100 transition-all">
-        <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-          {{ $index + 1 }}
-        </td>
-        <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-          {{ item.name }}
-        </td>
-        <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-          {{ item.totalCash }}
-        </td>
-
-        <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-          {{ item.nombreEmpleado }}
-        </td>
-
-        <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-          {{ item.date | date }}
-        </td>
-      </tr>
-      }
-    </app-table>
+    <table-data
+      [columns]="columns"
+      [data]="cashRegisters()"
+      [actions]="false"
+    />
   `,
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,
@@ -58,7 +42,12 @@ export default class CashHistoryPage implements OnInit {
 
   #cashRegisterService = inject(CashRegisterService);
 
-  public header: string[] = ['N°', 'Name', 'Monto Total', 'Empleado', 'fecha'];
+  public columns: KeysWithoutId<CashRegisterHistoryDto>[] = [
+    'name',
+    'totalCash',
+    'nombreEmpleado',
+    'date',
+  ];
   public cashRegisters = signal<CashRegisterHistoryDto[]>([]);
 
   ngOnInit(): void {

@@ -32,16 +32,16 @@ interface Roles {
   template: `
     <form>
       @for (op of opciones; track $index) {
-      <div>
-        <label>
-          <input
-            type="checkbox"
-            [checked]="selection.isSelected(op)"
-            (change)="selection.toggle(op)"
-          />
-          {{ op }}
-        </label>
-      </div>
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              [checked]="selection.isSelected(op)"
+              (change)="selection.toggle(op)"
+            />
+            {{ op }}
+          </label>
+        </div>
       }
 
       <button
@@ -54,7 +54,7 @@ interface Roles {
     </form>
   `,
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,

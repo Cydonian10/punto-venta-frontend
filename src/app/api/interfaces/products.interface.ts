@@ -1,42 +1,57 @@
-import { CategoryDto } from "./category.interface";
-import { UnitDto } from "./unit.interface";
-
+import { CategoryDto } from './category.interface';
+import { UnitDto } from './unit.interface';
 
 export interface ProductsResposne {
-  totalPages:number,
-  data: ProductDto[]
+  totalPages: number;
+  data: ProductDto[];
 }
 
-
 export interface ProductDto {
-  id:                number;
-  stock:             number;
-  salePrice:         number;
-  purchasePrice:     number;
-  purchaseDesc:      number;
-  image:             null;
-  type:              string;
-  description:       string;
-  size:              string;
+  id: number;
+  stock: number;
+  salePrice: number;
+  purchasePrice: number;
+  purchaseDesc: number;
+  image: null;
+  type: string;
+  description: string;
+  size: string;
   condicionDiscount: string;
-  name:              string;
-  category:          CategoryDto;
-  unitMeasurement:   UnitDto;
-  inputActive?:boolean
+  name: string;
+  category: CategoryDto;
+  unitMeasurement: UnitDto;
+  inputActive?: boolean;
+}
+
+export interface ProductTable {
+  id: number;
+  stock: number;
+  salePrice: number;
+  purchasePrice: number;
+  purchaseDesc: number;
+  image: null | string;
+  type: string;
+  description: string;
+  size: string;
+  condicionDiscount: string;
+  name: string;
+  categoryName: string;
+  unit: string;
+  inputActive?: boolean;
 }
 
 export interface ProductCrearDto {
-  stock:             number;
-  salePrice:         number;
-  purchasePrice:     number;
-  purchaseDesc:      number;
-  type:              string;
-  description:       string;
-  size:              string;
-  categoryId:        CategoryDto["id"];
-  unitMeasurementId: UnitDto["id"];
+  stock: number;
+  salePrice: number;
+  purchasePrice: number;
+  purchaseDesc: number;
+  type: string;
+  description: string;
+  size: string;
+  categoryId: CategoryDto['id'];
+  unitMeasurementId: UnitDto['id'];
   condicionDiscount: string;
-  name:              string;
+  name: string;
 }
 
 export interface ProductUpdateDto extends ProductCrearDto {}
@@ -48,9 +63,9 @@ export interface FilterProductDto {
 }
 
 export interface HistoryProductPrice {
-  id:number,
-  productId:number,
-  oldPrice:number,
-  name:string,
-  date:string
+  id: number;
+  productId: number;
+  oldPrice: number;
+  name: string;
+  date: string;
 }

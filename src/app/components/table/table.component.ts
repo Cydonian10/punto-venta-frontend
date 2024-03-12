@@ -10,7 +10,11 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
         <thead class="ltr:text-left rtl:text-right">
           <tr>
             @for (item of header; track $index) {
-              <th class="text-left whitespace-nowrap px-4 py-2 font-medium text-gray-900 sticky inset-y-0 start-0 bg-white">{{item}}</th>
+              <th
+                class="text-left whitespace-nowrap px-4 py-2 font-medium text-gray-900 sticky inset-y-0 start-0 bg-white"
+              >
+                {{ item }}
+              </th>
             }
           </tr>
         </thead>
@@ -22,15 +26,13 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
     </div>
   `,
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableComponent {
-
   @Input()
-  header:string[] = []
-
+  header: string[] = [];
 }

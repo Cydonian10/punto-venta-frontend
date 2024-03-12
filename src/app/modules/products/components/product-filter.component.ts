@@ -30,9 +30,18 @@ import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
       [cdkConnectedOverlayOrigin]="trigger"
       [cdkConnectedOverlayOpen]="isOpen()"
       [cdkConnectedOverlayOffsetY]="10"
-      [cdkConnectedOverlayOffsetX]="-200"
+      (overlayOutsideClick)="open()"
     >
-      <div class="bg-white p-5 shadow-2xl rounded-lg w-[230px]">
+      <div
+        class="bg-white p-5 shadow-2xl rounded-lg w-[200px] md:w-[350px] relative"
+      >
+        <button
+          (click)="open()"
+          class="absolute top-2 right-2 hover:bg-gray-400 p-1 rounded-md hover:text-white"
+        >
+          <i class="bx bx-window-close text-xl"></i>
+        </button>
+        <h3 class="font-bold text-sm mb-3 text-center">Filtros de busqueda</h3>
         <form class="space-y-2" [formGroup]="form" (submit)="aplicarFiltro()">
           <input
             formControlName="name"

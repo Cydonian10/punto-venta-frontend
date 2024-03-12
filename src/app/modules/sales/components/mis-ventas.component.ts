@@ -7,45 +7,43 @@ import {
   Component,
   Inject,
   OnInit,
+  computed,
   inject,
   signal,
 } from '@angular/core';
 import { SaleService } from '../../../api/services/sale.service';
-import { SaleDto } from '@/api/interfaces/sale.interface';
+import { SaleDto, SaleTableDto } from '@/api/interfaces/sale.interface';
+import { TableDataComponent } from '@/components/table/table-data.component';
+import { KeysWithoutId } from '@/helpers/toTable';
+import { PaginacionComponent } from '@/components/paginación/paginacion.component';
 
 @Component({
   selector: 'app-mis-ventas',
   standalone: true,
-  imports: [DialogLayout, TitleCasePipe, TableComponent, DatePipe],
+  imports: [
+    DialogLayout,
+    TitleCasePipe,
+    TableDataComponent,
+    DatePipe,
+    PaginacionComponent,
+  ],
   template: `
     <dialog-layout
       [title]="this.data.titulo | titlecase"
       (onClose)="closeDialog()"
     >
-      <div class="overflow-y-scroll h-[400px]">
-        <app-table [header]="header">
-          @for (sale of sales(); track $index) {
-          <tr class="hover:bg-gray-100 transition-all">
-            <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-              {{ sale.vaucherNumber }}
-            </td>
-            <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-              {{ sale.customer.email }}
-            </td>
-            <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-              S/ {{ sale.totalPrice }}
-            </td>
-            <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-              {{ sale.date | date : 'full' }}
-            </td>
-          </tr>
-          }
-        </app-table>
-      </div>
+      <table-data [columns]="columns" [data]="salesTableData()" />
+      <app-paginacion
+        [paginacion]="{
+          page: 1,
+          quantityRecordsPerPage: 4
+        }"
+        [totalPage]="12"
+      />
     </dialog-layout>
   `,
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,
@@ -55,10 +53,26 @@ export class MisVentasComponent implements OnInit {
   #saleService = inject(SaleService);
   public sales = signal<SaleDto[]>([]);
   public header = ['Vaucher', 'Cliente', 'Precio Total', 'Fecha'];
+  public columns: KeysWithoutId<SaleTableDto>[] = [
+    'vaucherNumber',
+    'customerName',
+    'totalPrice',
+    'date',
+  ];
+
+  public salesTableData = computed(() =>
+    this.sales().map(
+      (x) =>
+        ({
+          ...x,
+          customerName: x.customer.name,
+        }) as SaleTableDto,
+    ),
+  );
 
   constructor(
     private dialogRef: DialogRef<any>,
-    @Inject(DIALOG_DATA) public data: { titulo: '' }
+    @Inject(DIALOG_DATA) public data: { titulo: '' },
   ) {}
 
   ngOnInit(): void {

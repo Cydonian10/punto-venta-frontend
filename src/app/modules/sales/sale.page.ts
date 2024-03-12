@@ -21,6 +21,8 @@ import { SaleService } from '@/api/services/sale.service';
 import { AlertService } from '@/core/services/alert.service';
 import { MisVentasComponent } from './components/mis-ventas.component';
 import { ProductQuantityComponent } from '@/components/product-quantity/product-quantity.component';
+import { NewUserComponent } from './components/new-user.component';
+import { AuthService } from '@/api/services/auth.service';
 
 @Component({
   selector: 'app-sale',
@@ -52,32 +54,33 @@ import { ProductQuantityComponent } from '@/components/product-quantity/product-
 
     <div class="entrada lg:flex lg:items-start">
       <section class="w-full lg:w-4/12 print:hidden">
-        @if(cashRegisterActive()) {
-        <app-input
-          label="Buscador"
-          placeholder="Nombre del producto"
-          [control]="nameProduct"
-        />
-        <div class="flex gap-3 mt-2">
-          <button
-            (click)="selectUser()"
-            class="btn-ghost ghost-primary py-1 px-3"
-          >
-            Usuario
-          </button>
-          <button class="btn-ghost ghost-dark py-1 px-3">Nuevo Usuario</button>
-        </div>
-
-        <div class="mt-4 flex flex-col gap-1">
-          @for (product of products(); track product.id) {
-
-          <app-product-quantity
-            [product]="product"
-            (onActiveInput)="activeInput($event)"
-            (onAddProduct)="agregarProduct($event)"
+        @if (cashRegisterActive()) {
+          <app-input
+            label="Buscador"
+            placeholder="Nombre del producto"
+            [control]="nameProduct"
           />
-          }
-        </div>
+          <div class="flex gap-3 mt-2">
+            <button
+              (click)="selectUser()"
+              class="btn-ghost ghost-primary py-1 px-3"
+            >
+              Usuario
+            </button>
+            <button (click)="newUser()" class="btn-ghost ghost-dark py-1 px-3">
+              Nuevo Usuario
+            </button>
+          </div>
+
+          <div class="mt-4 flex flex-col gap-1">
+            @for (product of products(); track product.id) {
+              <app-product-quantity
+                [product]="product"
+                (onActiveInput)="activeInput($event)"
+                (onAddProduct)="agregarProduct($event)"
+              />
+            }
+          </div>
         }
       </section>
 
@@ -90,91 +93,93 @@ import { ProductQuantityComponent } from '@/components/product-quantity/product-
                 class="text-xl font-semibold text-gray-900 sm:text-3xl flex gap-5 items-center"
               >
                 <span class="block">Cliente: </span>
-                @if(customerActive()) {
-                <span
-                  class="block text-sm bg-indigo-300 px-4 py-2 rounded-md border-indigo-500 border-2 text-gray-700 font-bold"
-                  >{{ customerActive()?.email | titlecase }}</span
-                >
+                @if (customerActive()) {
+                  <span
+                    class="block text-sm bg-indigo-300 px-4 py-2 rounded-md border-indigo-500 border-2 text-gray-700 font-bold"
+                    >{{ customerActive()?.email | titlecase }}</span
+                  >
                 }
               </h1>
             </header>
 
             <div class="mt-8">
               <ul class="space-y-4">
-                @for (itemCart of shoppingCart() ; track $index) {
-                <li class="flex items-center gap-4">
-                  <img
-                    src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=830&q=80"
-                    alt=""
-                    class="size-16 rounded object-cover"
-                  />
+                @for (itemCart of shoppingCart(); track $index) {
+                  <li class="flex items-center gap-4">
+                    <img
+                      src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=830&q=80"
+                      alt=""
+                      class="size-16 rounded object-cover"
+                    />
 
-                  <div>
-                    <h3 class="text-sm text-gray-900">{{ itemCart.name }}</h3>
+                    <div>
+                      <h3 class="text-sm text-gray-900">{{ itemCart.name }}</h3>
 
-                    <dl class="mt-0.5 space-y-px text-[10px] text-gray-600">
-                      <div>
-                        <dt class="inline">Precio:</dt>
-                        <dd class="inline">{{ itemCart.unitPrice }}</dd>
-                      </div>
+                      <dl class="mt-0.5 space-y-px text-[10px] text-gray-600">
+                        <div>
+                          <dt class="inline">Precio:</dt>
+                          <dd class="inline">{{ itemCart.unitPrice }}</dd>
+                        </div>
 
-                      <div>
-                        <dt class="inline">Color:</dt>
-                        <dd class="inline">White</dd>
-                      </div>
-                    </dl>
-                  </div>
+                        <div>
+                          <dt class="inline">Color:</dt>
+                          <dd class="inline">White</dd>
+                        </div>
+                      </dl>
+                    </div>
 
-                  <div class="flex flex-1 items-center justify-end gap-2">
-                    <form>
-                      <label for="Line1Qty" class="sr-only"> Quantity </label>
+                    <div class="flex flex-1 items-center justify-end gap-2">
+                      <form>
+                        <label for="Line1Qty" class="sr-only"> Quantity </label>
 
-                      <input
-                        type="number"
-                        min="1"
-                        [value]="itemCart.quantity"
-                        id="Line1Qty"
-                        class="h-8 w-12 rounded border-gray-200 bg-gray-50 p-0 text-center text-xs text-gray-600 [-moz-appearance:_textfield] focus:outline-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
-                      />
-                    </form>
+                        <input
+                          type="number"
+                          min="1"
+                          [value]="itemCart.quantity"
+                          id="Line1Qty"
+                          class="h-8 w-12 rounded border-gray-200 bg-gray-50 p-0 text-center text-xs text-gray-600 [-moz-appearance:_textfield] focus:outline-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
+                        />
+                      </form>
 
-                    <button
-                      (click)="removeProduct(itemCart)"
-                      class="text-gray-600 transition hover:text-red-600"
-                    >
-                      <i class="bx bx-trash"></i>
-                    </button>
-                  </div>
-                </li>
+                      <button
+                        (click)="removeProduct(itemCart)"
+                        class="text-gray-600 transition hover:text-red-600"
+                      >
+                        <i class="bx bx-trash"></i>
+                      </button>
+                    </div>
+                  </li>
                 }
               </ul>
 
-              @if(shoppingCart().length > 0){
-              <div class="mt-8 flex justify-end border-t border-gray-100 pt-8">
-                <div class="w-screen max-w-lg space-y-4">
-                  <dl class="space-y-0.5 text-sm text-gray-700">
-                    <div class="flex justify-between">
-                      <dt>Subtotal</dt>
-                      <dd>S/ {{ subTotal().toFixed(2) }}</dd>
-                    </div>
+              @if (shoppingCart().length > 0) {
+                <div
+                  class="mt-8 flex justify-end border-t border-gray-100 pt-8"
+                >
+                  <div class="w-screen max-w-lg space-y-4">
+                    <dl class="space-y-0.5 text-sm text-gray-700">
+                      <div class="flex justify-between">
+                        <dt>Subtotal</dt>
+                        <dd>S/ {{ subTotal().toFixed(2) }}</dd>
+                      </div>
 
-                    <div class="flex justify-between">
-                      <dt>IGV 18%</dt>
-                      <dd>S/ {{ igv().toFixed(2) }}</dd>
-                    </div>
+                      <div class="flex justify-between">
+                        <dt>IGV 18%</dt>
+                        <dd>S/ {{ igv().toFixed(2) }}</dd>
+                      </div>
 
-                    <div class="flex justify-between">
-                      <dt>Discount</dt>
-                      <dd>-£20</dd>
-                    </div>
+                      <div class="flex justify-between">
+                        <dt>Discount</dt>
+                        <dd>-£20</dd>
+                      </div>
 
-                    <div class="flex justify-between !text-base font-medium">
-                      <dt>Total</dt>
-                      <dd>S/ {{ total().toFixed(2) }}</dd>
-                    </div>
-                  </dl>
+                      <div class="flex justify-between !text-base font-medium">
+                        <dt>Total</dt>
+                        <dd>S/ {{ total().toFixed(2) }}</dd>
+                      </div>
+                    </dl>
 
-                  <!-- <div class="flex justify-end">
+                    <!-- <div class="flex justify-end">
                     <span
                       class="inline-flex items-center justify-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-indigo-700"
                     >
@@ -199,24 +204,24 @@ import { ProductQuantityComponent } from '@/components/product-quantity/product-
                     </span>
                   </div> -->
 
-                  @if(cashRegisterActive()) {
-                  <div class="flex justify-end gap-4">
-                    <button
-                      (click)="cotizacion()"
-                      class="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
-                    >
-                      Cotizar
-                    </button>
-                    <button
-                      (click)="pagar()"
-                      class="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
-                    >
-                      Pagar
-                    </button>
+                    @if (cashRegisterActive()) {
+                      <div class="flex justify-end gap-4">
+                        <button
+                          (click)="cotizacion()"
+                          class="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
+                        >
+                          Cotizar
+                        </button>
+                        <button
+                          (click)="pagar()"
+                          class="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
+                        >
+                          Pagar
+                        </button>
+                      </div>
+                    }
                   </div>
-                  }
                 </div>
-              </div>
               }
             </div>
           </div>
@@ -225,7 +230,7 @@ import { ProductQuantityComponent } from '@/components/product-quantity/product-
     </div>
   `,
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,
@@ -237,6 +242,7 @@ export default class SalePage {
   #dialog = inject(Dialog);
   #saleService = inject(SaleService);
   #alertService = inject(AlertService);
+  #authService = inject(AuthService);
 
   public nameProduct = new FormControl('', {
     validators: [],
@@ -261,8 +267,8 @@ export default class SalePage {
             name: resp,
             price: null,
             stock: null,
-          })
-        )
+          }),
+        ),
       )
       .subscribe((resp) => {
         this.products.set(resp);
@@ -270,8 +276,9 @@ export default class SalePage {
   }
 
   misVentas() {
-    const dialogRef = this.#dialog.open(MisVentasComponent, {
-      width: '100%',
+    this.#dialog.open(MisVentasComponent, {
+      width: '800px',
+      backdropClass: 'bg-black/60',
       data: { titulo: 'Mis Ventas' },
       disableClose: true,
     });
@@ -296,13 +303,14 @@ export default class SalePage {
           x.inputActive = true;
         }
         return x;
-      })
+      }),
     );
   }
 
   selectUser() {
     const dialogRef = this.#dialog.open(SelecUserComponent, {
-      width: '100%',
+      width: '600px',
+      backdropClass: 'bg-black/60',
       disableClose: true,
     });
 
@@ -362,5 +370,23 @@ export default class SalePage {
 
   limpiarSale() {
     this.#cartService.clearSale();
+  }
+
+  newUser() {
+    this.#dialog
+      .open(NewUserComponent, {
+        minWidth: '300px',
+        width: '500px',
+        backdropClass: 'bg-black/60',
+        data: { titulo: 'Agregar Usuario' },
+        disableClose: true,
+      })
+      .closed.subscribe((resp: any) => {
+        if (resp) {
+          this.#authService.registerUser(resp).subscribe((x) => {
+            this.#alertService.showAlertSuccess('Usuario Creado');
+          });
+        }
+      });
   }
 }
