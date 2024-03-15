@@ -1,16 +1,17 @@
 import { LayoutService } from '@/core/services/layout.service';
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
+import { AuthService } from '@/api/services/auth.service';
 
 @Component({
   selector: 'app-side-menu',
   standalone: true,
-  imports: [NgClass, RouterLink, CdkAccordionModule],
+  imports: [NgClass, RouterLink, CdkAccordionModule, RouterLinkActive],
   templateUrl: './side-menu.component.html',
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,
@@ -18,6 +19,7 @@ import { CdkAccordionModule } from '@angular/cdk/accordion';
 })
 export class SideMenuComponent {
   #layoutService = inject(LayoutService);
+  public user = inject(AuthService).user;
 
   public open = this.#layoutService.open;
   public expandedIndex = 0;
@@ -52,6 +54,7 @@ export class SideMenuComponent {
           icon: 'bx bxl-product-hunt',
         },
         { name: 'Unit', link: '/admin/unit', icon: 'bx bxl-product-hunt' },
+        { name: 'QRCode', link: '/admin/qr-code', icon: 'bx bxl-product-hunt' },
       ],
     },
   ];

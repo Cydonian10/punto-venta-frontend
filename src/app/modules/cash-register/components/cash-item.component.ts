@@ -26,22 +26,22 @@ import { RouterLink } from '@angular/router';
           <h3 class="text-lg font-bold text-gray-900 sm:text-xl">
             <a [routerLink]="['history', dto.id]"> {{ dto.name }}</a>
           </h3>
-
+          <span class="text-[10px] font-bold">IdUser: {{ dto.userId }}</span>
           <p class="mt-1 text-xs font-medium text-gray-600">
             {{ dto.open ? 'Abierto' : 'Cerrado' }}
           </p>
         </div>
 
         @if (dto.open) {
-        <button
-          (click)="handleCloseDialog()"
-          class="w-[60px] h-[60px] rounded-lg bg-green-500 active:scale-95 transition-transform"
-        ></button>
-        }@else {
-        <button
-          (click)="handleOpenDialog()"
-          class="w-[60px] h-[60px] rounded-lg bg-red-500 active:scale-95 transition-transform"
-        ></button>
+          <button
+            (click)="handleCloseDialog()"
+            class="w-[60px] h-[60px] rounded-lg bg-green-500 active:scale-95 transition-transform"
+          ></button>
+        } @else {
+          <button
+            (click)="handleOpenDialog()"
+            class="w-[60px] h-[60px] rounded-lg bg-red-500 active:scale-95 transition-transform"
+          ></button>
         }
       </div>
 
@@ -57,19 +57,18 @@ import { RouterLink } from '@angular/router';
         </div>
       </dl>
 
-      @if(this.cashActive == null || this.cashActive.id === dto.id) {
+      @if (!dto.userId) {
         <button
-        class="btn-ghost ghost-primary absolute bottom-5 right-8 py-1 px-3 "
-        (click)="handleActiveCashRegister()"
-      >
+          class="btn-ghost ghost-primary absolute bottom-5 right-8 py-1 px-3 "
+          (click)="handleActiveCashRegister()"
+        >
           Activar
         </button>
       }
-     
     </div>
   `,
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,
@@ -81,9 +80,10 @@ export class CashItemComponent {
     initialCash: 0,
     date: '',
     open: false,
+    userId: null,
   };
 
-  @Input() cashActive: CashRegisterDto | null = null
+  @Input() cashActive: CashRegisterDto | null = null;
 
   @Output() onDialog = new EventEmitter<number>();
   @Output() onDialogClose = new EventEmitter<number>();

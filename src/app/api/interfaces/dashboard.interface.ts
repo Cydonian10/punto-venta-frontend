@@ -12,7 +12,8 @@ export interface Dashboard {
 export interface DashboardProduct {
   name: string;
   stock: number;
-  totalSales: number;
+  quantitySale: number;
+  unitSymbol: string;
 }
 
 export interface TopSale {

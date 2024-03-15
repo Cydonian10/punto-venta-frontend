@@ -83,9 +83,14 @@ export default class UnitPage {
   }
 
   crearUnit(data: UnitCrearDto) {
-    this.#unitService.crearUnit(data).subscribe((resp: any) => {
-      this.units.update((old) => [resp, ...old]);
-      this.#alertService.showAlertSuccess('Creado correctamente');
+    this.#unitService.crearUnit(data).subscribe({
+      next: (resp: any) => {
+        this.units.update((old) => [resp, ...old]);
+        this.#alertService.showAlertSuccess('Creado correctamente');
+      },
+      error: (err) => {
+        this.#alertService.showAlertError(err.error.errors.Symbol[0]);
+      },
     });
   }
 

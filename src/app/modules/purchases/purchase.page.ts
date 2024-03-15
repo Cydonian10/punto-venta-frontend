@@ -199,6 +199,7 @@ export default class PurchasePage {
             name: resp,
             price: null,
             stock: null,
+            barCode: null,
           }),
         ),
       )

@@ -2,6 +2,7 @@ import { CategoryDto } from '@/api/interfaces/category.interface';
 import { ProductDto } from '@/api/interfaces/products.interface';
 import { UnitDto } from '@/api/interfaces/unit.interface';
 import { CategoryService } from '@/api/services/category.service';
+import { ProductService } from '@/api/services/product.service';
 import { UnitService } from '@/api/services/unit.service';
 import { InputComponent } from '@/components/input/input.component';
 import { DialogLayout } from '@/layouts/dialog/dialog.layout';
@@ -11,6 +12,7 @@ import {
   Component,
   Inject,
   OnInit,
+  inject,
   signal,
 } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -100,6 +102,12 @@ import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
           [control]="form.controls.condicionDiscount"
         />
 
+        <app-input
+          label="Codigo"
+          type="number"
+          [control]="form.controls.barCode"
+        />
+
         <div class="flex items-center justify-end">
           @if (data) {
             <button class="btn btn-secondary w-[200px]">Actulizar</button>
@@ -118,6 +126,8 @@ import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductCrearFormComponent implements OnInit {
+  #productService = inject(ProductService);
+
   public form = this.fb.group({
     stock: new FormControl(),
     salePrice: new FormControl(),
@@ -130,6 +140,7 @@ export class ProductCrearFormComponent implements OnInit {
     unitMeasurementId: new FormControl(),
     condicionDiscount: new FormControl(),
     name: new FormControl(),
+    barCode: new FormControl(),
   });
 
   public categories = signal<CategoryDto[]>([]);
@@ -143,6 +154,7 @@ export class ProductCrearFormComponent implements OnInit {
     private unitService: UnitService,
   ) {
     if (data) {
+      console.log(data);
       this.form.patchValue({
         ...data,
         categoryId: data.category.id,
@@ -167,6 +179,14 @@ export class ProductCrearFormComponent implements OnInit {
 
   handleSubmit() {
     if (this.data) {
+      if (this.data.salePrice !== this.form.controls.salePrice.getRawValue()) {
+        this.#productService
+          .updateSalePrice(
+            this.form.controls.salePrice.getRawValue(),
+            this.data.id,
+          )
+          .subscribe();
+      }
       this.dialogRef.close({ ...this.form.getRawValue(), id: this.data.id });
     }
     this.dialogRef.close(this.form.getRawValue());

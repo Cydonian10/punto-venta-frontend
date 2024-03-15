@@ -1,17 +1,15 @@
 <div class="flex min-h-screen w-full">
-
   <app-side-menu />
 
   <div class="w-full bg-gray-50">
     <app-navbar />
 
     @if (config().show) {
-      <app-alert [message]="config().message" [alert]="config().type"/>
+    <app-alert [message]="config().message" [alert]="config().type" />
     }
 
     <main class="p-10 container m-auto">
       <router-outlet />
     </main>
   </div>
-
 </div>

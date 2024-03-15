@@ -1,4 +1,3 @@
-import { TableComponent } from '@/components/table/table.component';
 import { DialogLayout } from '@/layouts/dialog/dialog.layout';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DatePipe, TitleCasePipe } from '@angular/common';
@@ -11,7 +10,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { SaleService } from '../../../api/services/sale.service';
+import { SaleService } from '@/api/services/sale.service';
 import { SaleDto, SaleTableDto } from '@/api/interfaces/sale.interface';
 import { TableDataComponent } from '@/components/table/table-data.component';
 import { KeysWithoutId } from '@/helpers/toTable';
@@ -32,7 +31,11 @@ import { PaginacionComponent } from '@/components/paginación/paginacion.compone
       [title]="this.data.titulo | titlecase"
       (onClose)="closeDialog()"
     >
-      <table-data [columns]="columns" [data]="salesTableData()" />
+      <table-data
+        [columns]="columns"
+        [data]="salesTableData()"
+        [actions]="false"
+      />
       <app-paginacion
         [paginacion]="{
           page: 1,

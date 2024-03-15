@@ -4,4 +4,6 @@ export interface ItemCart {
   name: string;
   unitPrice: number;
   discount: number;
+  subTotal: number;
+  unidad: string;
 }

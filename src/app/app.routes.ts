@@ -63,6 +63,10 @@ export const routes: Routes = [
           import('./modules/cash-register/cash-history.page'),
       },
       { path: 'unit', loadComponent: () => import('./modules/unit/unit.page') },
+      {
+        path: 'qr-code',
+        loadComponent: () => import('./modules/qrcode/qrcode.page'),
+      },
     ],
   },
 ];

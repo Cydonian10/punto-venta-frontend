@@ -7,19 +7,11 @@ import {
   CreateCashRegisterDto,
 } from '../interfaces/cash-register.interface';
 import { checkToken } from '@/core/interceptors/token.interceptor';
-import { LocalStorageService } from '@/core/services/local-storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class CashRegisterService {
   #http = inject(HttpClient);
   #url = `${environment.apiUrl}/api/cash-registers`;
-
-
-
-  constructor() {
-
-  
-  }
 
   getCashRegister() {
     return this.#http.get<CashRegisterDto[]>(`${this.#url}`);
@@ -41,13 +33,21 @@ export class CashRegisterService {
     return this.#http.put(
       `${this.#url}/close/${id}`,
       {},
-      { context: checkToken() }
+      { context: checkToken() },
     );
   }
 
-  getHistory(id: number) {
-    return this.#http.get<CashRegisterHistoryDto[]>(`${this.#url}/history/${id}`);
+  activeRegisterCashWithUser(userId: string, id: number) {
+    const pathOperation = [{ path: '/userId', op: 'replace', value: userId }];
+
+    return this.#http.patch(`${this.#url}/${id}`, pathOperation, {
+      context: checkToken(),
+    });
   }
 
-
+  getHistory(id: number) {
+    return this.#http.get<CashRegisterHistoryDto[]>(
+      `${this.#url}/history/${id}`,
+    );
+  }
 }

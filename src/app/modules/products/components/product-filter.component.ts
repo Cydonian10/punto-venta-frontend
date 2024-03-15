@@ -19,7 +19,7 @@ import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
       type="button"
       cdkOverlayOrigin
       #trigger="cdkOverlayOrigin"
-      class="btn btn-secondary py-2 px-4"
+      class="btn btn-secondary btn-sm sm:btn-md"
     >
       Filter Menu
     </button>

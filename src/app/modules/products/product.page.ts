@@ -54,6 +54,7 @@ import { KeysWithoutId } from '@/helpers/toTable';
         [data]="productDataTable()"
         (onUpdate)="openDiloagCrear($event)"
         (onDelete)="deleteProduct($event)"
+        (onHistory)="historyProduct($event)"
       />
 
       <div>
@@ -101,6 +102,8 @@ export default class ProductPage implements OnInit {
     'categoryName',
     'stock',
     'unit',
+    'barCode',
+    'quantitySale',
   ];
 
   public pagination = signal<PageDto>({ page: 1, quantityRecordsPerPage: 4 });
@@ -180,7 +183,8 @@ export default class ProductPage implements OnInit {
 
   updatePrice(id: number, precio: number) {
     const dialogRef = this.#dialog.open(PriceUpdateComponent, {
-      width: '100%',
+      width: '700px',
+      backdropClass: 'bg-black/60',
       data: { id, precio },
       disableClose: true,
     });
@@ -216,7 +220,8 @@ export default class ProductPage implements OnInit {
 
   historyProduct(id: number) {
     this.#dialog.open(ProductHistoryComponent, {
-      width: '100%',
+      width: '700px',
+      backdropClass: 'bg-black/60',
       data: { id },
       disableClose: true,
     });

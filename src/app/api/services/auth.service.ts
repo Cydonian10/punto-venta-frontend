@@ -11,6 +11,7 @@ import {
 import { environment } from '../../../environments/environment.development';
 import { checkToken } from '@/core/interceptors/token.interceptor';
 import { switchMap, tap } from 'rxjs';
+import { LocalStorageService } from '@/core/services/local-storage.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,7 @@ import { switchMap, tap } from 'rxjs';
 export class AuthService {
   #http = inject(HttpClient);
   #tokenService = inject(TokenService);
+  #localStorageService = inject(LocalStorageService);
   #url = environment.apiUrl + '/api/auth';
 
   #user = signal<AuthUser | null>(null);
@@ -35,6 +37,12 @@ export class AuthService {
 
   registerUser(dto: AuthRegisterDto) {
     return this.#http.post(`${this.#url}/register`, dto);
+  }
+
+  cerrarSession() {
+    this.#tokenService.removeToken();
+    this.#localStorageService.remove('Products');
+    this.#localStorageService.remove('CustomerActive');
   }
 
   profile() {

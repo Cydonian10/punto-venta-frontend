@@ -82,10 +82,14 @@ import {
                     >
                       <i class="bx bxs-trash-alt"></i>
                     </button>
+
+                    <button
+                      (click)="handleHistory(data.id)"
+                      class="btn-icon btn-icon-primary px-2 py-1"
+                    >
+                      <i class="bx bx-detail"></i>
+                    </button>
                   }
-                  <!-- <button class="btn-icon btn-icon-primary px-2 py-1">
-                    <i class="bx bx-detail"></i>
-                  </button> -->
 
                   @if (_select) {
                     <button
@@ -140,6 +144,7 @@ export class TableDataComponent {
   @Output() onUpdate = new EventEmitter();
   @Output() onDelete = new EventEmitter();
   @Output() onSelect = new EventEmitter();
+  @Output() onHistory = new EventEmitter();
 
   handleUpdate(value: any) {
     this.onUpdate.emit(value);
@@ -151,5 +156,9 @@ export class TableDataComponent {
 
   handleSelect(value: any) {
     this.onSelect.emit(value);
+  }
+
+  handleHistory(id: number) {
+    this.onHistory.emit(id);
   }
 }

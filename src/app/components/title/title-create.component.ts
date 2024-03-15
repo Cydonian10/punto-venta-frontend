@@ -20,7 +20,7 @@ import { InputComponent } from '../input/input.component';
       <div class="flex gap-4 items-center">
         <ng-content></ng-content>
         <button
-          class="btn btn-primary animation-btn py-1 px-3 md:py-2.5 text-sm md:text-base md:px-5"
+          class="btn btn-primary animation-btn btn-sm md:btn-md"
           (click)="openDialog()"
         >
           {{ buttonText }}
@@ -29,7 +29,7 @@ import { InputComponent } from '../input/input.component';
     </div>
   `,
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,

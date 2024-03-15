@@ -8,6 +8,7 @@ export class ChangeNamePipe implements PipeTransform {
   transform(value: string): string {
     const values: Record<string, string> = {
       name: 'nombre',
+      userName: 'nombre',
       symbol: 'simbolo',
       description: 'descripción',
       categoryName: 'Categoria',
@@ -24,6 +25,9 @@ export class ChangeNamePipe implements PipeTransform {
       customerName: 'cliente',
       totalPrice: 'Precio Total',
       vaucherNumber: 'vaucher',
+      quantitySale: 'Cantidad Vendida',
+      unitSymbol: 'Unidad',
+      totalSales: 'Compra Total',
     };
 
     return values[value] ?? value;

@@ -93,7 +93,7 @@ export default class DashboardPage implements OnInit {
   #dashboardService = inject(DashboarService);
 
   public dashboard = signal<Dashboard | null>(null);
-  public columnsProduct = ['name', 'stock', 'totalSales'];
+  public columnsProduct = ['name', 'stock', 'quantitySale', 'unitSymbol'];
   public columnsSales = ['userName', 'totalSales'];
 
   ngOnInit(): void {

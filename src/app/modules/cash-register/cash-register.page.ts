@@ -14,6 +14,9 @@ import { OpenCashComponent } from './components/open-cash.component';
 import { TitleCreateComponent } from '@/components/title/title-create.component';
 import { CartService } from '@/core/services/cart.service';
 import { AlertService } from '@/core/services/alert.service';
+import { CreateCashRegisterComponent } from './components/create-cash-register.component';
+import { AuthService } from '@/api/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cash-register',
@@ -29,19 +32,19 @@ import { AlertService } from '@/core/services/alert.service';
 
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         @for (cashitem of cashRegisters(); track $index) {
-        <app-cash-item
-          (onActiveCashRegister)="activaCashRegiser($event)"
-          (onDialogClose)="close($event)"
-          (onDialog)="open($event)"
-          [dto]="cashitem"
-          [cashActive]="cashActive()"
-        />
+          <app-cash-item
+            (onActiveCashRegister)="activaCashRegiser($event)"
+            (onDialogClose)="close($event)"
+            (onDialog)="open($event)"
+            [dto]="cashitem"
+            [cashActive]="cashActive()"
+          />
         }
       </div>
     </div>
   `,
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,
@@ -49,9 +52,11 @@ import { AlertService } from '@/core/services/alert.service';
 })
 export default class CashRegisterPage implements OnInit {
   #cashRegisterService = inject(CashRegisterService);
+  #user = inject(AuthService).user();
   #cartService = inject(CartService);
   #dialog = inject(Dialog);
   #alertService = inject(AlertService);
+  #router = inject(Router);
 
   public cashRegisters = signal<CashRegisterDto[]>([]);
 
@@ -65,7 +70,8 @@ export default class CashRegisterPage implements OnInit {
 
   open(id: number) {
     const dialogRef = this.#dialog.open(OpenCashComponent, {
-      width: '100%',
+      width: '400px',
+      backdropClass: 'bg-black/50',
       disableClose: true,
     });
 
@@ -82,14 +88,29 @@ export default class CashRegisterPage implements OnInit {
                   x.open = true;
                 }
                 return x;
-              })
+              }),
             );
           });
       }
     });
   }
 
-  openDiloagCrear() {}
+  openDiloagCrear() {
+    this.#dialog
+      .open(CreateCashRegisterComponent, {
+        width: '400px',
+        backdropClass: 'bg-black/50',
+        disableClose: true,
+      })
+      .closed.subscribe((resp: any) => {
+        if (resp) {
+          this.#cashRegisterService.create(resp).subscribe((resp) => {
+            this.cashRegisters.update((x) => [resp, ...x]);
+            this.#alertService.showAlertSuccess('Creado correctamente');
+          });
+        }
+      });
+  }
 
   close(id: number) {
     if (this.#cartService.cashRegisterActive()!.id !== id) {
@@ -112,7 +133,7 @@ export default class CashRegisterPage implements OnInit {
                 x.open = false;
               }
               return x;
-            })
+            }),
           );
           this.#cartService.activeCashRegister(null);
           this.#alertService.showAlertSuccess('Caja Cerrada con exito');
@@ -122,10 +143,16 @@ export default class CashRegisterPage implements OnInit {
   }
 
   activaCashRegiser(value: CashRegisterDto) {
-    if (value.open == false) {
+    if (value.open == false || value.userId) {
+      this.#alertService.showAlertError(`No puede acceder a la caja `);
       return;
     }
-    this.#cartService.activeCashRegister(value);
-    this.#alertService.showAlertSuccess('Caja activada ' + value.name);
+    this.#cashRegisterService
+      .activeRegisterCashWithUser(this.#user!.usuario.id, value.id)
+      .subscribe(() => {
+        this.#cartService.activeCashRegister(value);
+        this.#alertService.showAlertSuccess('Caja activada ' + value.name);
+        this.#router.navigateByUrl('admin/ventas');
+      });
   }
 }

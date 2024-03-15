@@ -3,6 +3,7 @@ import { ItemCart } from '../interfaces/shopping-cart.interface';
 import { LocalStorageService } from './local-storage.service';
 import { User } from '@/api/interfaces/auth.interface';
 import { CashRegisterDto } from '@/api/interfaces/cash-register.interface';
+import { ProductDto } from '@/api/interfaces/products.interface';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
@@ -38,42 +39,78 @@ export class CartService {
     effect(() => {
       this.#localStorageService.save<ItemCart[]>(
         this._shoppingCart(),
-        'Products'
+        'Products',
       );
       this.#localStorageService.save<User | null>(
         this._customerActive(),
-        'CustomerActive'
+        'CustomerActive',
       );
       this.#localStorageService.save<CashRegisterDto | null>(
         this.#cashRegisterActive(),
-        'cashActive'
+        'cashActive',
       );
+
+      console.log({
+        SUBTOTAL: this.subTotal(),
+        IGB: this.igv(),
+        TOTAL: this.total(),
+      });
     });
   }
 
   subTotal = computed(() =>
     this._shoppingCart().reduce(
       (acc, item) => acc + item.quantity * item.unitPrice * 0.82,
-      0
-    )
+      0,
+    ),
   );
   igv = computed(() =>
     this._shoppingCart().reduce(
       (acc, item) => acc + item.quantity * item.unitPrice * 0.18,
-      0
-    )
+      0,
+    ),
   );
   total = computed(() =>
     this._shoppingCart().reduce(
       (acc, item) => acc + item.quantity * item.unitPrice,
-      0
-    )
+      0,
+    ),
   );
+
+  addOneProduct(product: ProductDto, quantity: number) {
+    const item: ItemCart = {
+      quantity,
+      productId: product.id,
+      name: product.name,
+      unitPrice: product.salePrice,
+      discount: 0,
+      subTotal: product.salePrice * quantity,
+      unidad: product.unitMeasurement.symbol,
+    };
+
+    const itemCart = this._shoppingCart().some(
+      (x) => x.productId === item.productId,
+    );
+
+    if (itemCart) {
+      this._shoppingCart.update((x) =>
+        x.map((y) => {
+          if (y.productId === item.productId) {
+            y.quantity += 1;
+            y.subTotal += item.subTotal;
+          }
+          return y;
+        }),
+      );
+    } else {
+      this._shoppingCart.update((x) => [{ ...item, quantity: 1 }, ...x]);
+    }
+  }
 
   addProducts(item: ItemCart) {
     //const itemCart = this._shoppingCart().filter( x => x.productId === item.productId )
     const itemCart = this._shoppingCart().some(
-      (x) => x.productId === item.productId
+      (x) => x.productId === item.productId,
     );
 
     if (itemCart) {
@@ -81,9 +118,10 @@ export class CartService {
         x.map((y) => {
           if (y.productId === item.productId) {
             y.quantity = item.quantity;
+            y.subTotal = y.quantity * y.unitPrice;
           }
           return y;
-        })
+        }),
       );
     } else {
       this._shoppingCart.update((x) => [item, ...x]);
@@ -96,7 +134,7 @@ export class CartService {
 
   removeProduct(item: ItemCart) {
     this._shoppingCart.update((x) =>
-      x.filter((x) => x.productId !== item.productId)
+      x.filter((x) => x.productId !== item.productId),
     );
   }
 

@@ -20,6 +20,8 @@ export interface ProductDto {
   name: string;
   category: CategoryDto;
   unitMeasurement: UnitDto;
+  quantitySale: number;
+  barCode: number;
   inputActive?: boolean;
 }
 
@@ -37,6 +39,8 @@ export interface ProductTable {
   name: string;
   categoryName: string;
   unit: string;
+  barCode: number;
+  quantitySale: number;
   inputActive?: boolean;
 }
 
@@ -48,6 +52,8 @@ export interface ProductCrearDto {
   type: string;
   description: string;
   size: string;
+  barCode: number;
+  quantitySale: number;
   categoryId: CategoryDto['id'];
   unitMeasurementId: UnitDto['id'];
   condicionDiscount: string;
@@ -60,6 +66,7 @@ export interface FilterProductDto {
   name: string | null;
   price: number | null;
   stock: number | null;
+  barCode: number | null;
 }
 
 export interface HistoryProductPrice {

@@ -5,6 +5,7 @@ export interface CashRegisterDto {
   date: string;
   open: boolean;
   totalCash?: number;
+  userId: string | null;
 }
 
 export interface CreateCashRegisterDto {
@@ -15,6 +16,7 @@ export interface CreateCashRegisterDto {
 
 export interface OpenCashRegisterDto {
   initialCash: number;
+  userId: string;
 }
 
 export interface CashRegisterHistoryDto {
