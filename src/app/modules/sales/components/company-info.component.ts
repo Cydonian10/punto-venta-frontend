@@ -38,7 +38,5 @@ export class CompanyInfoComponent {
 
   public date = new Date();
 
-  ngOnInit() {
-    console.log(this.user());
-  }
+  ngOnInit() {}
 }

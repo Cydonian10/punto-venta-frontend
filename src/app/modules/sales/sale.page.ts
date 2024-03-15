@@ -14,7 +14,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { debounceTime, filter, switchMap } from 'rxjs';
+import { debounceTime, delay, filter, switchMap, tap } from 'rxjs';
 import { SelecUserComponent } from './components/select-user.component';
 import { CreateSaleDto, StatusCompra } from '@/api/interfaces/sale.interface';
 import { SaleService } from '@/api/services/sale.service';
@@ -25,7 +25,10 @@ import { NewUserComponent } from './components/new-user.component';
 import { AuthService } from '@/api/services/auth.service';
 import { SaleItemsComponent } from './components/sale-items.component';
 import { CompanyInfoComponent } from './components/company-info.component';
-import CashRegisterPage from '../cash-register/cash-register.page';
+import { CashRegisterService } from '@/api/services/cash-register.service';
+import { CashRegisterActiveComponent } from './components/cash-register-active.component';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { CashRegisterDto } from '@/api/interfaces/cash-register.interface';
 
 @Component({
   selector: 'app-sale',
@@ -40,6 +43,7 @@ import CashRegisterPage from '../cash-register/cash-register.page';
     DatePipe,
     SaleItemsComponent,
     CompanyInfoComponent,
+    CashRegisterActiveComponent,
   ],
   template: `
     <app-title-create
@@ -51,6 +55,14 @@ import CashRegisterPage from '../cash-register/cash-register.page';
         class="block bg-teal-300 py-1 px-3 md:py-2.5 text-sm md:text-base md:px-5 rounded-md border-teal-400 text-gray-800 font-bold"
         >{{ cashRegisterActive()?.name | titlecase }}</span
       >
+
+      <cash-register-active
+        (onSelectCashRegister)="handleSelectCashRegister($event)"
+        (onCloseCashRegister)="handleCloseCashRegiser($event)"
+        [user]="user()!"
+        [cashRegisters]="cashRegisters()!"
+      />
+
       <button
         class="btn py-1 px-3 md:py-2.5 text-sm md:text-base md:px-5 btn-danger"
         (click)="limpiarSale()"
@@ -141,6 +153,7 @@ import CashRegisterPage from '../cash-register/cash-register.page';
 })
 export default class SalePage {
   #productService = inject(ProductService);
+  #cashRegisterService = inject(CashRegisterService);
   #cartService = inject(CartService);
   #dialog = inject(Dialog);
   #saleService = inject(SaleService);
@@ -155,6 +168,7 @@ export default class SalePage {
     validators: [],
   });
   public products = signal<ProductDto[]>([]);
+  public user = this.#authService.user;
   public statusCompra = signal<StatusCompra>(StatusCompra.debe);
   public shoppingCart = this.#cartService.shoppingCart;
   public subTotal = this.#cartService.subTotal;
@@ -163,8 +177,16 @@ export default class SalePage {
   public customerActive = this.#cartService.customerActive;
   public cashRegisterActive = this.#cartService.cashRegisterActive;
   public selectTypeSearch = signal<'qr' | 'name'>('qr');
+  public cashRegisters = signal<CashRegisterDto[]>([]);
+  // cashRegisters = toSignal(this.#cashRegisterService.getCashRegister());
 
   ngOnInit() {
+    this.searchByName();
+    this.searchByQrProduct();
+    this.getCashRegisters();
+  }
+
+  private searchByName() {
     this.nameProduct.valueChanges
       .pipe(
         debounceTime(1000),
@@ -184,7 +206,9 @@ export default class SalePage {
         this.nameProduct.reset('');
         this.qrProduct.reset(0);
       });
+  }
 
+  private searchByQrProduct() {
     this.qrProduct.valueChanges
       .pipe(
         debounceTime(300),
@@ -204,6 +228,12 @@ export default class SalePage {
         this.nameProduct.reset('');
         this.qrProduct.reset(null);
       });
+  }
+
+  getCashRegisters() {
+    this.#cashRegisterService.getCashRegister().subscribe((resp) => {
+      this.cashRegisters.set(resp);
+    });
   }
 
   misVentas() {
@@ -330,9 +360,42 @@ export default class SalePage {
       });
   }
 
-  handleSelectTypeSearch(value: any) {
+  handleSelectTypeSearch(value: 'qr' | 'name') {
     this.selectTypeSearch.set(value);
     this.nameProduct.reset('');
     this.qrProduct.reset(null);
+  }
+
+  handleSelectCashRegister(value: CashRegisterDto) {
+    const userId = this.#authService.user()?.usuario.id;
+    this.#cashRegisterService
+      .activeRegisterCashWithUser(userId!, value.id)
+      .subscribe((resp) => {
+        this.cashRegisters.update((v: CashRegisterDto[]) =>
+          v.map((v: CashRegisterDto) => {
+            if (v.id === value.id) {
+              v.userId = userId!;
+            }
+            return v;
+          }),
+        );
+      });
+    this.#cartService.handleActiveCashRegister(value);
+  }
+
+  handleCloseCashRegiser(id: number) {
+    this.#cashRegisterService.close(id).subscribe(() => {
+      this.#alertService.showAlertSuccess('Caja Cerrada');
+      this.#cartService.handleActiveCashRegister(null);
+      this.cashRegisters.update((v: CashRegisterDto[]) =>
+        v.map((v: CashRegisterDto) => {
+          if (v.id === id) {
+            v.open = false;
+            v.userId = null;
+          }
+          return v;
+        }),
+      );
+    });
   }
 }

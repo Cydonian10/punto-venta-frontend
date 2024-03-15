@@ -142,7 +142,7 @@ export class CartService {
     this._customerActive.set(user);
   }
 
-  activeCashRegister(value: CashRegisterDto | null) {
+  handleActiveCashRegister(value: CashRegisterDto | null) {
     this.#cashRegisterActive.set(value);
   }
 

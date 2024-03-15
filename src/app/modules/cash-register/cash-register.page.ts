@@ -135,7 +135,7 @@ export default class CashRegisterPage implements OnInit {
               return x;
             }),
           );
-          this.#cartService.activeCashRegister(null);
+          this.#cartService.handleActiveCashRegister(null);
           this.#alertService.showAlertSuccess('Caja Cerrada con exito');
         });
       }
@@ -150,7 +150,7 @@ export default class CashRegisterPage implements OnInit {
     this.#cashRegisterService
       .activeRegisterCashWithUser(this.#user!.usuario.id, value.id)
       .subscribe(() => {
-        this.#cartService.activeCashRegister(value);
+        this.#cartService.handleActiveCashRegister(value);
         this.#alertService.showAlertSuccess('Caja activada ' + value.name);
         this.#router.navigateByUrl('admin/ventas');
       });
