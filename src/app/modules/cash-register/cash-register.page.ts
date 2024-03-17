@@ -7,7 +7,10 @@ import {
   signal,
 } from '@angular/core';
 import { CashItemComponent } from './components/cash-item.component';
-import { CashRegisterDto } from '@/api/interfaces/cash-register.interface';
+import {
+  CashRegisterDto,
+  CreateCashRegisterDto,
+} from '@/api/interfaces/cash-register.interface';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { ConfirmComponent } from '@/components/confirm/confirm.component';
 import { OpenCashComponent } from './components/open-cash.component';
@@ -17,6 +20,7 @@ import { AlertService } from '@/core/services/alert.service';
 import { CreateCashRegisterComponent } from './components/create-cash-register.component';
 import { AuthService } from '@/api/services/auth.service';
 import { Router } from '@angular/router';
+import { CashRegisterStore } from '@/core/store/cash-register.store';
 
 @Component({
   selector: 'app-cash-register',
@@ -31,13 +35,12 @@ import { Router } from '@angular/router';
       </app-title-create>
 
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        @for (cashitem of cashRegisters(); track $index) {
+        @for (cashitem of cashRegisterState().listCashRegister; track $index) {
           <app-cash-item
             (onActiveCashRegister)="activaCashRegiser($event)"
             (onDialogClose)="close($event)"
             (onDialog)="open($event)"
             [dto]="cashitem"
-            [cashActive]="cashActive()"
           />
         }
       </div>
@@ -51,22 +54,16 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CashRegisterPage implements OnInit {
-  #cashRegisterService = inject(CashRegisterService);
   #user = inject(AuthService).user();
   #cartService = inject(CartService);
   #dialog = inject(Dialog);
   #alertService = inject(AlertService);
   #router = inject(Router);
+  #cashRegisterStore = inject(CashRegisterStore);
 
-  public cashRegisters = signal<CashRegisterDto[]>([]);
+  public cashRegisterState = this.#cashRegisterStore.state;
 
-  cashActive = this.#cartService.cashRegisterActive;
-
-  ngOnInit(): void {
-    this.#cashRegisterService.getCashRegister().subscribe((resp) => {
-      this.cashRegisters.set(resp);
-    });
-  }
+  ngOnInit(): void {}
 
   open(id: number) {
     const dialogRef = this.#dialog.open(OpenCashComponent, {
@@ -77,20 +74,7 @@ export default class CashRegisterPage implements OnInit {
 
     dialogRef.closed.subscribe((resp: any) => {
       if (resp) {
-        this.#cashRegisterService
-          .open(id, { initialCash: resp })
-          .subscribe(() => {
-            this.cashRegisters.update((x) =>
-              x.map((x) => {
-                if (x.id == id) {
-                  x.initialCash = resp;
-                  x.totalCash = resp;
-                  x.open = true;
-                }
-                return x;
-              }),
-            );
-          });
+        this.#cashRegisterStore.openCashRegister(id, { initialCash: resp });
       }
     });
   }
@@ -104,55 +88,29 @@ export default class CashRegisterPage implements OnInit {
       })
       .closed.subscribe((resp: any) => {
         if (resp) {
-          this.#cashRegisterService.create(resp).subscribe((resp) => {
-            this.cashRegisters.update((x) => [resp, ...x]);
-            this.#alertService.showAlertSuccess('Creado correctamente');
-          });
+          this.#cashRegisterStore.addCashRegister(resp);
         }
       });
   }
 
   close(id: number) {
-    if (this.#cartService.cashRegisterActive()!.id !== id) {
-      this.#alertService.showAlertError('NO es tu caja');
-      return;
-    }
-
-    const dialogRef = this.#dialog.open(ConfirmComponent, {
-      width: '100%',
-      data: { titulo: 'Estas seguro de cerrar caja' },
-      disableClose: true,
-    });
-
-    dialogRef.closed.subscribe((resp: any) => {
-      if (resp) {
-        this.#cashRegisterService.close(id).subscribe(() => {
-          this.cashRegisters.update((x) =>
-            x.map((x) => {
-              if (x.id == id) {
-                x.open = false;
-              }
-              return x;
-            }),
-          );
-          this.#cartService.handleActiveCashRegister(null);
-          this.#alertService.showAlertSuccess('Caja Cerrada con exito');
-        });
-      }
-    });
+    this.#dialog
+      .open(ConfirmComponent, {
+        width: '400px',
+        data: { titulo: 'Estas seguro de cerrar caja' },
+        disableClose: true,
+      })
+      .closed.subscribe((resp: any) => {
+        if (resp) {
+          this.#cashRegisterStore.closeCashRegister(id);
+        }
+      });
   }
 
   activaCashRegiser(value: CashRegisterDto) {
-    if (value.open == false || value.userId) {
-      this.#alertService.showAlertError(`No puede acceder a la caja `);
-      return;
-    }
-    this.#cashRegisterService
-      .activeRegisterCashWithUser(this.#user!.usuario.id, value.id)
-      .subscribe(() => {
-        this.#cartService.handleActiveCashRegister(value);
-        this.#alertService.showAlertSuccess('Caja activada ' + value.name);
-        this.#router.navigateByUrl('admin/ventas');
-      });
+    this.#cashRegisterStore.updateCashRegister(value.id, {
+      name: value.name!,
+      userId: null,
+    });
   }
 }

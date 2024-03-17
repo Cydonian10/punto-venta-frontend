@@ -145,7 +145,7 @@
         class="w-10 h-10 object-cover rounded-xl ring-4 ring-gray-200"
       />
       <div>
-        <h3 class="font-bold text-gray-900">{{ user()!.usuario.name }}</h3>
+        <h3 class="font-bold text-gray-900">{{ user()?.usuario?.name }}</h3>
         <div class="flex gap-4">
           @for (rol of user()?.roles; track $index) {
             <p class="text-gray-800 text-xs">{{ rol }}</p>

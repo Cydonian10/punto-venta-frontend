@@ -57,12 +57,12 @@ import { RouterLink } from '@angular/router';
         </div>
       </dl>
 
-      @if (!dto.userId) {
+      @if (dto.userId) {
         <button
-          class="btn-ghost ghost-primary absolute bottom-5 right-8 py-1 px-3 "
+          class="btn-ghost ghost-primary absolute bottom-4 right-2 py-1 px-3 "
           (click)="handleActiveCashRegister()"
         >
-          Activar
+          Remover
         </button>
       }
     </div>
@@ -82,8 +82,6 @@ export class CashItemComponent {
     open: false,
     userId: null,
   };
-
-  @Input() cashActive: CashRegisterDto | null = null;
 
   @Output() onDialog = new EventEmitter<number>();
   @Output() onDialogClose = new EventEmitter<number>();

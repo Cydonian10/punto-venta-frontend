@@ -28,3 +28,8 @@ export interface CashRegisterHistoryDto {
   date: Date;
   nombreEmpleado: string;
 }
+
+export interface UpdateCashRegisterDto {
+  name: string;
+  userId: string | null;
+}

@@ -5,6 +5,7 @@ import {
   CashRegisterDto,
   CashRegisterHistoryDto,
   CreateCashRegisterDto,
+  UpdateCashRegisterDto,
 } from '../interfaces/cash-register.interface';
 import { checkToken } from '@/core/interceptors/token.interceptor';
 
@@ -40,9 +41,23 @@ export class CashRegisterService {
   activeRegisterCashWithUser(userId: string, id: number) {
     const pathOperation = [{ path: '/userId', op: 'replace', value: userId }];
 
-    return this.#http.patch(`${this.#url}/${id}`, pathOperation, {
-      context: checkToken(),
-    });
+    return this.#http.patch<any>(
+      `${this.#url}/${id}/user/${userId}`,
+      pathOperation,
+      {
+        context: checkToken(),
+      },
+    );
+  }
+
+  updateCashRegister(cashRegisterId: number, dto: UpdateCashRegisterDto) {
+    return this.#http.put<CashRegisterDto>(
+      `${this.#url}/${cashRegisterId}`,
+      dto,
+      {
+        context: checkToken(),
+      },
+    );
   }
 
   getHistory(id: number) {

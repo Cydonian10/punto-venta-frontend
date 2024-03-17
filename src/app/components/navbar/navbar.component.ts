@@ -2,6 +2,7 @@ import { AuthService } from '@/api/services/auth.service';
 import { AlertService } from '@/core/services/alert.service';
 import { CartService } from '@/core/services/cart.service';
 import { LayoutService } from '@/core/services/layout.service';
+import { CashRegisterStore } from '@/core/store/cash-register.store';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
@@ -17,6 +18,7 @@ export class NavbarComponent {
   #layoutService = inject(LayoutService);
   #userService = inject(AuthService);
   #cartService = inject(CartService);
+  #cashRegisterStore = inject(CashRegisterStore);
   #router = inject(Router);
   #alerService = inject(AlertService);
 
@@ -27,7 +29,7 @@ export class NavbarComponent {
   }
 
   public handleCloseSession() {
-    const cashActive = this.#cartService.cashRegisterActive();
+    const cashActive = this.#cashRegisterStore.state().currentCashRegister;
 
     if (cashActive) {
       this.#alerService.showAlertWarning('Cierra primejo tu caja');

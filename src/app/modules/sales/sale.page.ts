@@ -29,6 +29,7 @@ import { CashRegisterService } from '@/api/services/cash-register.service';
 import { CashRegisterActiveComponent } from './components/cash-register-active.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CashRegisterDto } from '@/api/interfaces/cash-register.interface';
+import { CashRegisterStore } from '@/core/store/cash-register.store';
 
 @Component({
   selector: 'app-sale',
@@ -53,14 +54,14 @@ import { CashRegisterDto } from '@/api/interfaces/cash-register.interface';
     >
       <span
         class="block bg-teal-300 py-1 px-3 md:py-2.5 text-sm md:text-base md:px-5 rounded-md border-teal-400 text-gray-800 font-bold"
-        >{{ cashRegisterActive()?.name | titlecase }}</span
+        >{{ cashRegisterState().currentCashRegister?.name | titlecase }}</span
       >
 
       <cash-register-active
         (onSelectCashRegister)="handleSelectCashRegister($event)"
         (onCloseCashRegister)="handleCloseCashRegiser($event)"
         [user]="user()!"
-        [cashRegisters]="cashRegisters()!"
+        [cashRegisters]="cashRegisterState().listCashRegister"
       />
 
       <button
@@ -73,7 +74,7 @@ import { CashRegisterDto } from '@/api/interfaces/cash-register.interface';
 
     <div class="entrada lg:flex lg:items-start gap-10">
       <section class="w-full lg:w-4/12 print:hidden">
-        @if (cashRegisterActive()) {
+        @if (cashRegisterState().currentCashRegister) {
           <div class="flex gap-2">
             <div
               [ngClass]="{ 'bg-amber-500': selectTypeSearch() === 'qr' }"
@@ -175,10 +176,12 @@ export default class SalePage {
   public igv = this.#cartService.igv;
   public total = this.#cartService.total;
   public customerActive = this.#cartService.customerActive;
-  public cashRegisterActive = this.#cartService.cashRegisterActive;
   public selectTypeSearch = signal<'qr' | 'name'>('qr');
   public cashRegisters = signal<CashRegisterDto[]>([]);
-  // cashRegisters = toSignal(this.#cashRegisterService.getCashRegister());
+
+  #cashRegisterStore = inject(CashRegisterStore);
+
+  public cashRegisterState = this.#cashRegisterStore.state;
 
   ngOnInit() {
     this.searchByName();
@@ -223,6 +226,11 @@ export default class SalePage {
         ),
       )
       .subscribe((resp) => {
+        if (resp.length === 0) {
+          this.#alertService.showAlertWarning('No hay producto');
+          this.qrProduct.reset(null);
+          return;
+        }
         this.products.set(resp);
         this.#cartService.addOneProduct(resp[0], 1);
         this.nameProduct.reset('');
@@ -293,7 +301,7 @@ export default class SalePage {
     const createSale: CreateSaleDto = {
       date: new Date(),
       customerId: this.customerActive()!.id,
-      cashRegisterId: this.cashRegisterActive()!.id,
+      cashRegisterId: this.cashRegisterState().currentCashRegister!.id,
       taxex: 18,
       statusCompra: this.statusCompra(),
       saleDetails: this.shoppingCart(),
@@ -320,7 +328,7 @@ export default class SalePage {
     const createSale: CreateSaleDto = {
       date: new Date(),
       customerId: this.customerActive()!.id,
-      cashRegisterId: this.cashRegisterActive()!.id,
+      cashRegisterId: this.cashRegisterState().currentCashRegister!.id,
       taxex: 18,
       statusCompra: this.statusCompra(),
       saleDetails: this.shoppingCart(),
@@ -328,6 +336,9 @@ export default class SalePage {
 
     this.#saleService.generateSale(createSale).subscribe({
       next: () => {
+        this.#cashRegisterStore.updateTotalCashBeforePago(
+          this.#cartService.total(),
+        );
         window.print();
         this.limpiarSale();
         this.#alertService.showAlertSuccess('Venta realizada');
@@ -368,34 +379,11 @@ export default class SalePage {
 
   handleSelectCashRegister(value: CashRegisterDto) {
     const userId = this.#authService.user()?.usuario.id;
-    this.#cashRegisterService
-      .activeRegisterCashWithUser(userId!, value.id)
-      .subscribe((resp) => {
-        this.cashRegisters.update((v: CashRegisterDto[]) =>
-          v.map((v: CashRegisterDto) => {
-            if (v.id === value.id) {
-              v.userId = userId!;
-            }
-            return v;
-          }),
-        );
-      });
-    this.#cartService.handleActiveCashRegister(value);
+    this.#cashRegisterStore.activeRegisterCashWithUser(userId!, value.id);
+    this.#cashRegisterStore.selectCurrectCashRegister(value);
   }
 
   handleCloseCashRegiser(id: number) {
-    this.#cashRegisterService.close(id).subscribe(() => {
-      this.#alertService.showAlertSuccess('Caja Cerrada');
-      this.#cartService.handleActiveCashRegister(null);
-      this.cashRegisters.update((v: CashRegisterDto[]) =>
-        v.map((v: CashRegisterDto) => {
-          if (v.id === id) {
-            v.open = false;
-            v.userId = null;
-          }
-          return v;
-        }),
-      );
-    });
+    this.#cashRegisterStore.closeCashRegister(id);
   }
 }

@@ -20,7 +20,7 @@ import {
       >
         <i class="bx bx-window-close text-2xl"></i>
       </button>
-      <h3 class="font-bold text-2xl mb-4">{{ title }}</h3>
+      <h3 class="font-bold text-xl mb-4">{{ title }}</h3>
       <ng-content></ng-content>
     </div>
   `,

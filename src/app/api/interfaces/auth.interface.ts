@@ -17,7 +17,7 @@ export interface ClaimAsignarDto {
   roles: string[];
 }
 
-export interface RoleAsignarDto {
+export interface AddRoleDto {
   email: string;
   roles: string[];
 }

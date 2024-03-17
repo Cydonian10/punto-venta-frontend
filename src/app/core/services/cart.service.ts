@@ -8,21 +8,17 @@ import { ProductDto } from '@/api/interfaces/products.interface';
 @Injectable({ providedIn: 'root' })
 export class CartService {
   #localStorageService = inject(LocalStorageService);
-  #cashRegisterActive = signal<CashRegisterDto | null>(null);
 
   private _shoppingCart = signal<ItemCart[]>([]);
   private _customerActive = signal<User | null>(null);
 
   shoppingCart = computed(() => this._shoppingCart());
   customerActive = computed(() => this._customerActive());
-  cashRegisterActive = computed(() => this.#cashRegisterActive());
 
   constructor() {
     const listData = this.#localStorageService.get<ItemCart[]>('Products');
     const customerActive =
       this.#localStorageService.get<User>('CustomerActive');
-    const cashActive =
-      this.#localStorageService.get<CashRegisterDto>('cashActive');
 
     if (listData) {
       this._shoppingCart.set(listData);
@@ -30,10 +26,6 @@ export class CartService {
 
     if (customerActive) {
       this._customerActive.set(customerActive);
-    }
-
-    if (cashActive) {
-      this.#cashRegisterActive.set(cashActive);
     }
 
     effect(() => {
@@ -45,16 +37,6 @@ export class CartService {
         this._customerActive(),
         'CustomerActive',
       );
-      this.#localStorageService.save<CashRegisterDto | null>(
-        this.#cashRegisterActive(),
-        'cashActive',
-      );
-
-      console.log({
-        SUBTOTAL: this.subTotal(),
-        IGB: this.igv(),
-        TOTAL: this.total(),
-      });
     });
   }
 
@@ -140,10 +122,6 @@ export class CartService {
 
   activeCustomer(user: User | null) {
     this._customerActive.set(user);
-  }
-
-  handleActiveCashRegister(value: CashRegisterDto | null) {
-    this.#cashRegisterActive.set(value);
   }
 
   clearSale() {

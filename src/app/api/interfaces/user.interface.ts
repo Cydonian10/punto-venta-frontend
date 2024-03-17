@@ -24,3 +24,24 @@ export enum Rol {
   Admin = 'Admin',
   Vendedor = 'Vendedor',
 }
+
+export interface Employed {
+  usuario: DatosEmployed;
+  roles: any[];
+  claims: any[];
+}
+
+export interface DatosEmployed {
+  id: string;
+  name: string;
+  birthday: Date;
+  email: string;
+  emailConfirmed: boolean;
+  salary: number;
+}
+
+export interface Customer {
+  id: string;
+  email: string;
+  name: string;
+}
