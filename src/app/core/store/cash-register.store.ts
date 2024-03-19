@@ -164,7 +164,7 @@ export class CashRegisterStore {
       listCashRegister: s.listCashRegister.map((cr) => {
         console.log(this.#state().currentCashRegister!.id);
         if (cr.id == this.#state().currentCashRegister!.id) {
-          cr.totalCash! += total;
+          cr.totalCash = cr.totalCash! + total;
         }
         return cr;
       }),
