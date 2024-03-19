@@ -27,9 +27,9 @@ import { SaleItemsComponent } from './components/sale-items.component';
 import { CompanyInfoComponent } from './components/company-info.component';
 import { CashRegisterService } from '@/api/services/cash-register.service';
 import { CashRegisterActiveComponent } from './components/cash-register-active.component';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { CashRegisterDto } from '@/api/interfaces/cash-register.interface';
 import { CashRegisterStore } from '@/core/store/cash-register.store';
+import { UserStore } from '@/core/store/user.store';
 
 @Component({
   selector: 'app-sale',
@@ -131,7 +131,7 @@ import { CashRegisterStore } from '@/core/store/cash-register.store';
           <p>Activar primero una caja</p>
         }
       </section>
-      <section class="lg:w-8/12">
+      <section class="lg:w-7/12">
         <company-info [cliente]="customerActive()!">
           <app-sale-items
             [shoppintCart]="shoppingCart()"
@@ -154,12 +154,12 @@ import { CashRegisterStore } from '@/core/store/cash-register.store';
 })
 export default class SalePage {
   #productService = inject(ProductService);
-  #cashRegisterService = inject(CashRegisterService);
   #cartService = inject(CartService);
   #dialog = inject(Dialog);
   #saleService = inject(SaleService);
   #alertService = inject(AlertService);
   #authService = inject(AuthService);
+  #userStore = inject(UserStore);
 
   public nameProduct = new FormControl('', {
     validators: [],
@@ -186,7 +186,7 @@ export default class SalePage {
   ngOnInit() {
     this.searchByName();
     this.searchByQrProduct();
-    this.getCashRegisters();
+    this.#userStore.getCustomers();
   }
 
   private searchByName() {
@@ -236,12 +236,6 @@ export default class SalePage {
         this.nameProduct.reset('');
         this.qrProduct.reset(null);
       });
-  }
-
-  getCashRegisters() {
-    this.#cashRegisterService.getCashRegister().subscribe((resp) => {
-      this.cashRegisters.set(resp);
-    });
   }
 
   misVentas() {
@@ -364,9 +358,7 @@ export default class SalePage {
       })
       .closed.subscribe((resp: any) => {
         if (resp) {
-          this.#authService.registerUser(resp).subscribe((x) => {
-            this.#alertService.showAlertSuccess('Usuario Creado');
-          });
+          this.#userStore.createCustomer(resp);
         }
       });
   }

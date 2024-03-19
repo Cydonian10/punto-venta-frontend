@@ -37,10 +37,6 @@ export class CashRegisterStore {
     this.loadCurrentCashRegister();
 
     effect(() => {
-      console.log('Mi state de cash register =>', this.#state());
-    });
-
-    effect(() => {
       this.#localStorageSrv.save<CashRegisterDto | null>(
         this.#state().currentCashRegister,
         'cashRegisterActive',

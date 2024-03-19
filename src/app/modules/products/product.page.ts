@@ -97,16 +97,16 @@ export default class ProductPage implements OnInit {
     'salePrice',
     'purchasePrice',
     'type',
-    'description',
+    'image',
     'size',
     'categoryName',
     'stock',
-    'unit',
     'barCode',
     'quantitySale',
+    'unit',
   ];
 
-  public pagination = signal<PageDto>({ page: 1, quantityRecordsPerPage: 4 });
+  public pagination = signal<PageDto>({ page: 1, quantityRecordsPerPage: 8 });
   public totalPage = signal<number>(0);
 
   ngOnInit(): void {
@@ -146,30 +146,29 @@ export default class ProductPage implements OnInit {
         return;
       }
       if (resp.id) {
-        const { id, ...res } = resp;
-        this.updateProduct(res, id);
+        this.updateProduct(resp.data, resp.id);
       } else {
-        this.crearProduct(resp);
+        this.crearProduct(resp.data);
       }
     });
   }
 
-  crearProduct(data: ProductCrearDto) {
+  crearProduct(data: FormData) {
     this.#productService.crearProduct(data).subscribe((resp: any) => {
       this.products.update((old) => [resp, ...old]);
       this.#alertService.showAlertSuccess('Creado correctamente');
     });
   }
 
-  updateProduct(data: ProductUpdateDto, id: number) {
-    this.#productService.updateProduct(data, id).subscribe(() => {
+  updateProduct(data: FormData, id: number) {
+    this.#productService.updateProduct(data, id).subscribe((res) => {
       this.products.update((old) => {
         return old.map((item) => {
           if (item.id === id) {
             item = {
-              ...data,
+              ...res,
               id: id,
-              image: null,
+              image: res.image,
               category: item.category,
               unitMeasurement: item.unitMeasurement,
             };

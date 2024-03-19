@@ -8,6 +8,7 @@ import {
   UpdateCashRegisterDto,
 } from '../interfaces/cash-register.interface';
 import { checkToken } from '@/core/interceptors/token.interceptor';
+import { delay } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CashRegisterService {
@@ -15,7 +16,9 @@ export class CashRegisterService {
   #url = `${environment.apiUrl}/api/cash-registers`;
 
   getCashRegister() {
-    return this.#http.get<CashRegisterDto[]>(`${this.#url}`);
+    return this.#http.get<CashRegisterDto[]>(`${this.#url}`, {
+      context: checkToken(),
+    });
   }
 
   create(dto: CreateCashRegisterDto) {

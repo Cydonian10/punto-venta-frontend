@@ -26,7 +26,9 @@ export class SideMenuComponent {
 
   public items: any[] = [
     { name: 'Dashboard', link: '/admin', icon: 'bx bxs-dashboard' },
-    { name: 'Users', link: '/admin/users', icon: 'bx bxs-user' },
+    { name: 'Usuarios', link: '/admin/users', icon: 'bx bxs-user' },
+    { name: 'Clientes', link: '/admin/customers', icon: 'bx bxs-user' },
+    { name: 'Empleados', link: '/admin/employees', icon: 'bx bxs-user' },
     { name: 'Compras', link: '/admin/purchases', icon: 'bx bx-store-alt' },
     { name: 'Ventas', link: '/admin/sales', icon: 'bx bx-book-open' },
     { name: 'Proveedores', link: '/admin/suppliers', icon: 'bx bx-book-open' },

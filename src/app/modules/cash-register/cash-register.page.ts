@@ -42,6 +42,8 @@ import { CashRegisterStore } from '@/core/store/cash-register.store';
             (onDialog)="open($event)"
             [dto]="cashitem"
           />
+        } @empty {
+          <p>Loading</p>
         }
       </div>
     </div>
@@ -54,11 +56,7 @@ import { CashRegisterStore } from '@/core/store/cash-register.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CashRegisterPage implements OnInit {
-  #user = inject(AuthService).user();
-  #cartService = inject(CartService);
   #dialog = inject(Dialog);
-  #alertService = inject(AlertService);
-  #router = inject(Router);
   #cashRegisterStore = inject(CashRegisterStore);
 
   public cashRegisterState = this.#cashRegisterStore.state;

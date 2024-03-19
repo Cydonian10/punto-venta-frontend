@@ -55,6 +55,10 @@ import {
                   <td class="whitespace-nowrap px-4 py-2 text-gray-700">
                     s/ {{ data[colum] }}
                   </td>
+                } @else if (colum === 'image') {
+                  <td class="whitespace-nowrap px-4 py-2 text-gray-700">
+                    <img width="100px" [src]="data[colum]" alt="" />
+                  </td>
                 } @else {
                   <td
                     [ngClass]="{

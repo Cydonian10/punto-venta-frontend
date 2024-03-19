@@ -41,12 +41,12 @@ export class ProductService {
     return this.#http.get<ProductDto[]>(`${this.#url}/filter`, { params });
   }
 
-  crearProduct(data: ProductCrearDto) {
-    return this.#http.post(`${this.#url}`, data);
+  crearProduct(data: FormData) {
+    return this.#http.post<ProductDto>(`${this.#url}`, data);
   }
 
-  updateProduct(data: ProductCrearDto, id: number) {
-    return this.#http.put(`${this.#url}/${id}`, data);
+  updateProduct(data: FormData, id: number) {
+    return this.#http.put<ProductDto>(`${this.#url}/${id}`, data);
   }
 
   deleteProduct(id: number) {

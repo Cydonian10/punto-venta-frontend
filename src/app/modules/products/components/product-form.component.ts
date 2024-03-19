@@ -108,6 +108,8 @@ import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
           [control]="form.controls.barCode"
         />
 
+        <input type="file" (change)="onFileSelectd($event)" />
+
         <div class="flex items-center justify-end">
           @if (data) {
             <button class="btn btn-secondary w-[200px]">Actulizar</button>
@@ -127,6 +129,7 @@ import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 })
 export class ProductCrearFormComponent implements OnInit {
   #productService = inject(ProductService);
+  // archivoSeleccionado: File | null = null;
 
   public form = this.fb.group({
     stock: new FormControl(),
@@ -141,10 +144,51 @@ export class ProductCrearFormComponent implements OnInit {
     condicionDiscount: new FormControl(),
     name: new FormControl(),
     barCode: new FormControl(),
+    image: new FormControl(),
   });
 
   public categories = signal<CategoryDto[]>([]);
   public units = signal<UnitDto[]>([]);
+
+  get stock() {
+    return this.form.controls.stock;
+  }
+  get salePrice() {
+    return this.form.controls.salePrice;
+  }
+  get purchasePrice() {
+    return this.form.controls.purchasePrice;
+  }
+  get purchaseDesc() {
+    return this.form.controls.purchaseDesc;
+  }
+  get type() {
+    return this.form.controls.type;
+  }
+  get description() {
+    return this.form.controls.description;
+  }
+  get size() {
+    return this.form.controls.size;
+  }
+  get categoryId() {
+    return this.form.controls.categoryId;
+  }
+  get unitMeasurementId() {
+    return this.form.controls.unitMeasurementId;
+  }
+  get condicionDiscount() {
+    return this.form.controls.condicionDiscount;
+  }
+  get name() {
+    return this.form.controls.name;
+  }
+  get barCode() {
+    return this.form.controls.barCode;
+  }
+  get image() {
+    return this.form.controls.image;
+  }
 
   constructor(
     private dialogRef: DialogRef<any>,
@@ -154,7 +198,7 @@ export class ProductCrearFormComponent implements OnInit {
     private unitService: UnitService,
   ) {
     if (data) {
-      console.log(data);
+      console.log('data =>', data);
       this.form.patchValue({
         ...data,
         categoryId: data.category.id,
@@ -177,7 +221,27 @@ export class ProductCrearFormComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  onFileSelectd(event: any) {
+    this.image.setValue(event.target.files[0]);
+  }
+
   handleSubmit() {
+    const formData = new FormData();
+
+    formData.append('stock', this.stock.getRawValue());
+    formData.append('salePrice', this.salePrice.getRawValue());
+    formData.append('purchasePrice', this.purchasePrice.getRawValue());
+    formData.append('purchaseDesc', this.purchaseDesc.getRawValue());
+    formData.append('type', this.type.getRawValue());
+    formData.append('description', this.description.getRawValue());
+    formData.append('size', this.size.getRawValue());
+    formData.append('categoryId', this.categoryId.getRawValue());
+    formData.append('unitMeasurementId', this.unitMeasurementId.getRawValue());
+    formData.append('condicionDiscount', this.condicionDiscount.getRawValue());
+    formData.append('name', this.name.getRawValue());
+    formData.append('barCode', this.barCode.getRawValue());
+    formData.append('image', this.image.getRawValue());
+
     if (this.data) {
       if (this.data.salePrice !== this.form.controls.salePrice.getRawValue()) {
         this.#productService
@@ -187,8 +251,9 @@ export class ProductCrearFormComponent implements OnInit {
           )
           .subscribe();
       }
-      this.dialogRef.close({ ...this.form.getRawValue(), id: this.data.id });
+      // this.dialogRef.close({ ...this.form.getRawValue(), id: this.data.id });
+      this.dialogRef.close({ data: formData, id: this.data.id });
     }
-    this.dialogRef.close(this.form.getRawValue());
+    this.dialogRef.close({ data: formData });
   }
 }

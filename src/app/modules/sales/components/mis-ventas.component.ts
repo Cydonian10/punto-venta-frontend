@@ -80,7 +80,6 @@ export class MisVentasComponent implements OnInit {
 
   ngOnInit(): void {
     this.#saleService.mySales().subscribe((resp) => {
-      console.log(resp);
       this.sales.set(resp);
     });
   }

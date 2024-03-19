@@ -6,7 +6,7 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 @Component({
   selector: 'app-confirm',
   standalone: true,
-  imports: [DialogLayout,TitleCasePipe],
+  imports: [DialogLayout, TitleCasePipe],
   template: `
     <dialog-layout
       [title]="this.data.titulo | titlecase"
@@ -14,12 +14,14 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
     >
       <div class="flex gap-4">
         <button (click)="handleConfirm()" class="btn btn-primary">Si</button>
-        <button (click)="handleCancel()" class="btn-ghost ghost-danger">Cancelar</button>
+        <button (click)="handleCancel()" class="btn-ghost ghost-danger">
+          Cancelar
+        </button>
       </div>
     </dialog-layout>
   `,
   styles: `
-   :host {
+    :host {
       display: block;
     }
   `,
@@ -28,7 +30,7 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 export class ConfirmComponent {
   constructor(
     private dialogRef: DialogRef<any>,
-    @Inject(DIALOG_DATA) public data: { titulo: "" }
+    @Inject(DIALOG_DATA) public data: { titulo: '' },
   ) {}
 
   closeDialog() {
@@ -36,10 +38,10 @@ export class ConfirmComponent {
   }
 
   handleConfirm() {
-    this.dialogRef.close(true)
+    this.dialogRef.close(true);
   }
 
   handleCancel() {
-    this.dialogRef.close(false)
+    this.dialogRef.close(false);
   }
 }

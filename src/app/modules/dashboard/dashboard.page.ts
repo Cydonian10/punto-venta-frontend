@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { CardInfoComponent } from './components/card-info.component';
 import { TableDataComponent } from '@/components/table/table-data.component';
+import { AlertService } from '@/core/services/alert.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -91,15 +92,22 @@ import { TableDataComponent } from '@/components/table/table-data.component';
 })
 export default class DashboardPage implements OnInit {
   #dashboardService = inject(DashboarService);
+  #alertSrv = inject(AlertService);
 
   public dashboard = signal<Dashboard | null>(null);
   public columnsProduct = ['name', 'stock', 'quantitySale', 'unitSymbol'];
   public columnsSales = ['userName', 'totalSales'];
 
   ngOnInit(): void {
-    this.#dashboardService.getDashsboard().subscribe((resp) => {
-      console.log(resp);
-      this.dashboard.set(resp);
+    this.#dashboardService.getDashsboard().subscribe({
+      next: (resp) => {
+        this.dashboard.set(resp);
+      },
+      error: (erro) => {
+        if (erro.status === 403) {
+          this.#alertSrv.showAlertError('No estas autorizado');
+        }
+      },
     });
   }
 }

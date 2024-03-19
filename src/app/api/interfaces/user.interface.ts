@@ -25,18 +25,27 @@ export enum Rol {
   Vendedor = 'Vendedor',
 }
 
-export interface Employed {
-  usuario: DatosEmployed;
+export interface EmployedRoles {
+  usuario: Employed;
   roles: any[];
   claims: any[];
 }
 
-export interface DatosEmployed {
+export interface Employed {
   id: string;
   name: string;
   birthday: Date;
   email: string;
-  emailConfirmed: boolean;
+  age: number;
+  salary: number;
+  roles: any[];
+  claims: any[];
+}
+
+export interface UpdateEmployedDto {
+  name: string;
+  birthday: Date;
+  email: string;
   salary: number;
 }
 

@@ -33,6 +33,14 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/users/users.page'),
       },
       {
+        path: 'customers',
+        loadComponent: () => import('./modules/users/customer.page'),
+      },
+      {
+        path: 'employees',
+        loadComponent: () => import('./modules/users/employees.page'),
+      },
+      {
         path: 'products',
         loadComponent: () => import('./modules/products/product.page'),
       },
