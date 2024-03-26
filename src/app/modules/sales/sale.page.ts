@@ -30,6 +30,7 @@ import { CashRegisterActiveComponent } from './components/cash-register-active.c
 import { CashRegisterDto } from '@/api/interfaces/cash-register.interface';
 import { CashRegisterStore } from '@/core/store/cash-register.store';
 import { UserStore } from '@/core/store/user.store';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sale',
@@ -160,6 +161,7 @@ export default class SalePage {
   #alertService = inject(AlertService);
   #authService = inject(AuthService);
   #userStore = inject(UserStore);
+  #router = inject(Router);
 
   public nameProduct = new FormControl('', {
     validators: [],
@@ -239,12 +241,13 @@ export default class SalePage {
   }
 
   misVentas() {
-    this.#dialog.open(MisVentasComponent, {
-      width: '800px',
-      backdropClass: 'bg-black/60',
-      data: { titulo: 'Mis Ventas' },
-      disableClose: true,
-    });
+    // this.#dialog.open(MisVentasComponent, {
+    //   width: '800px',
+    //   backdropClass: 'bg-black/60',
+    //   data: { titulo: 'Mis Ventas' },
+    //   disableClose: true,
+    // });
+    this.#router.navigateByUrl('/admin/sales/mis-ventas');
   }
 
   agregarProduct(value: { dto: ProductDto; quantity: number }) {

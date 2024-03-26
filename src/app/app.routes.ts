@@ -52,9 +52,19 @@ export const routes: Routes = [
         path: 'purchases',
         loadComponent: () => import('./modules/purchases/purchase.page'),
       },
+
       {
         path: 'sales',
-        loadComponent: () => import('./modules/sales/sale.page'),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./modules/sales/sale.page'),
+          },
+          {
+            path: 'mis-ventas',
+            loadComponent: () => import('./modules/sales/my-sales.page'),
+          },
+        ],
       },
       {
         path: 'suppliers',

@@ -14,9 +14,8 @@ import {
   standalone: true,
   imports: [ChangeNamePipe, TitleCasePipe, NgClass, DatePipe],
   template: `
-    <div
-      class="overflow-x-auto rounded-lg border border-gray-200 max-h-[500px] lg:max-h-[700px] "
-    >
+    <!-- max-h-[500px] lg:max-h-[700px] -->
+    <div class="overflow-x-auto rounded-lg border border-gray-200  ">
       <table class="min-w-full divide-y-2 divide-gray-200 bg-white  text-sm">
         <thead
           class="ltr:text-left rtl:text-right sticky top-0 inset-x-0 whitespace-nowrap bg-white z-10"

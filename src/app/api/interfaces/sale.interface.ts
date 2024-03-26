@@ -24,7 +24,7 @@ interface CreateSaleDetailDto {
 }
 
 export interface SaleDto {
-  id: string;
+  id: number;
   totalPrice: number;
   taxes: number;
   date: Date;
@@ -36,7 +36,7 @@ export interface SaleDto {
 }
 
 export interface SaleTableDto {
-  id: string;
+  id: number;
   totalPrice: number;
   taxes: number;
   date: Date;
@@ -49,6 +49,7 @@ export interface SaleTableDto {
 }
 
 export interface SaleCashRegister {
+  id: number;
   initialCash: number;
   date: Date;
   open: boolean;
