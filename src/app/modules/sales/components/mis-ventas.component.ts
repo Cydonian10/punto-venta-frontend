@@ -33,8 +33,9 @@ import { PaginacionComponent } from '@/components/paginación/paginacion.compone
     >
       <table-data
         [columns]="columns"
+        (onDelete)="handleDelete($event)"
         [data]="salesTableData()"
-        [actions]="false"
+        [actions]="true"
       />
       <app-paginacion
         [paginacion]="{
@@ -87,4 +88,6 @@ export class MisVentasComponent implements OnInit {
   closeDialog() {
     this.dialogRef.close();
   }
+
+  handleDelete(event: any) {}
 }

@@ -1,3 +1,3 @@
 export const environment = {
-  apiUrl: 'https://webapiventa.azurewebsites.net/',
+  apiUrl: 'https://localhost:7200',
 };
